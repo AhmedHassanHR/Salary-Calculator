@@ -1,0 +1,2146 @@
+<!DOCTYPE html>
+<!-- saved from url=(0061)file:///C:/Users/staff/Downloads/payroll_calculator_v8_3.html -->
+<html lang="en" id="htmlRoot" dir="ltr"><!-- ============================================================
+     HEAD — Meta, title, and all styles
+     ============================================================ --><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Egypt Salary Calculator — Ahmed Hassan | HR Expert</title>
+<style>
+/* ================================================================================
+   STYLESHEET CONTENTS
+   ─────────────────────────────────────────────────────────────────────────────────
+   Section 1 · Theme Variables    — CSS custom properties (colours, sizes, weights)
+   Section 2 · Dark Mode          — Colour overrides when data-theme="dark"
+   Section 3 · Global Base        — Reset, body, typography
+   Section 4 · Layout             — Hero header, page wrapper, two-panel split
+   Section 5 · Cards              — Card surface, settings panel
+   Section 6 · Forms              — Labels, inputs, select menus, grids, toggles
+   Section 7 · Buttons            — Primary, secondary, action, pill, reset
+   Section 8 · Results Panels     — Breakdown rows, summary totals
+   Section 9 · Charts             — Donut chart and legend
+   Section 10 · Print / PDF       — @media print rules (styles injected by JS)
+   Section 11 · Footer            — Signature bar, links, copyright
+   Section 12 · RTL               — Arabic right-to-left layout overrides
+   Section 13 · Responsive        — Mobile-first media queries (480 / 640 / 780 / 960px)
+   ================================================================================ */
+
+
+/* ================================================================================
+   SECTION 1 — THEME VARIABLES
+   These CSS custom properties (variables) control every colour, shadow, and
+   border in the app. To change a colour, edit it here — the change applies
+   everywhere automatically. The dark mode section (Section 2) overrides these
+   same variables when the user switches to dark mode.
+   ================================================================================ */
+:root{
+  --bg:#F0F4F9; --card:#fff; --ink:#0B1E30; --muted:#5E7185;
+  --primary:#0B2545; --primary-mid:#163860; --primary-lt:#204F82;
+  --accent:#D4A024; --accent-lt:#FAF0D3;
+  --line:#D8E2EE; --good:#1E7C52; --bad:#B03A2E; --cost:#5B3DA8;
+  --toggle-on:#1E7C52; --toggle-off:#8E9BAA;
+  --radius:10px; --shadow:0 4px 18px rgba(11,37,69,.09);
+}
+
+/* ================================================================================
+   SECTION 2 — DARK MODE
+   Overrides only the CSS variables defined in Section 1. When the <html>
+   element has data-theme="dark" (set by the JS theme toggle), every
+   rule below automatically replaces the light-mode colour. Nothing else
+   in the stylesheet changes — layout, spacing, and features are identical.
+   ================================================================================ */
+/* DARK MODE — colour variable overrides only.
+   How it works: when the <html> element gets data-theme="dark" (added
+   by the JS toggle below), every CSS variable listed here takes over
+   from the :root defaults above. Nothing else in the stylesheet changes
+   — layout, spacing, formulas, and all features stay exactly the same.
+   ===================================================================== */
+[data-theme="dark"]{
+  /* Page background — dark slate instead of light grey */
+  --bg:#0F1923;
+  /* Card surfaces — slightly lighter than the page so cards "float" */
+  --card:#1A2535;
+  /* Main body text — soft white, not pure white (easier on the eyes) */
+  --ink:#E2EAF4;
+  /* Secondary/muted text — mid-tone blue-grey */
+  --muted:#7A90A8;
+  /* Navy primary becomes a lighter blue so it's readable on dark backgrounds */
+  --primary:#A8C4E0;
+  --primary-mid:#7BAED6;
+  --primary-lt:#5C9BC8;
+  /* Gold accent stays the same — it pops on both light and dark */
+  --accent:#D4A024;
+  /* Gold tint becomes a very dark warm tone instead of pale yellow */
+  --accent-lt:#2A2110;
+  /* Border/divider lines — subtle on dark */
+  --line:#2C3E55;
+  /* Status colours — slightly brightened for dark backgrounds */
+  --good:#27AE73;
+  --bad:#E05A45;
+  --cost:#9B7AE0;
+  /* Martyrs' fund toggle remains green/grey */
+  --toggle-on:#27AE73;
+  --toggle-off:#3D5066;
+  /* Card shadow — stronger on dark so cards still have depth */
+  --shadow:0 4px 20px rgba(0,0,0,.35);
+}
+
+/* ── Dark mode: hero stays dark navy gradient (already dark, just deepen it) */
+[data-theme="dark"] .hero{
+  background:linear-gradient(135deg,#060D18 0%,#0D1F35 55%,#122A47 100%);
+}
+
+/* ── Dark mode: page background for the <body> */
+[data-theme="dark"] body{
+  background:var(--bg);
+}
+
+/* ── Dark mode: input fields need explicit background so they don't stay white */
+[data-theme="dark"] input[type="text"],
+[data-theme="dark"] input[type="number"],
+[data-theme="dark"] select{
+  background:#111E2E;
+  color:var(--ink);
+  border-color:var(--line);
+}
+[data-theme="dark"] input::placeholder{
+  color:var(--muted);
+}
+
+/* ── Dark mode: mode tabs background pill */
+[data-theme="dark"] .mode-tabs{background:#0F1923;}
+[data-theme="dark"] .mode-tab.active{background:#1A2535;color:var(--primary);}
+
+/* ── Dark mode: toggle field (Martyrs' Fund row) */
+[data-theme="dark"] .toggle-field{background:#111E2E;}
+
+/* ── Dark mode: summary net/cost rows — darken the tinted backgrounds */
+[data-theme="dark"] .summary-row.net-bg{
+  background:linear-gradient(135deg,#0E2B1F,#122B20);
+  border-color:#1E5C3A;
+}
+[data-theme="dark"] .summary-row.cost-bg{
+  background:linear-gradient(135deg,#1A1330,#1F1638);
+  border-color:#3D2A70;
+}
+
+/* ── Dark mode: settings panel table headers */
+[data-theme="dark"] table.bracket-table th{
+  background:#111E2E;
+}
+[data-theme="dark"] table.bracket-table td,
+[data-theme="dark"] table.bracket-table th{
+  border-color:var(--line);
+}
+[data-theme="dark"] table.bracket-table input{
+  background:#111E2E;
+  color:var(--ink);
+  border-color:var(--line);
+}
+
+/* ── Dark mode: footer signature card */
+[data-theme="dark"] .footer-sig{
+  background:#1A2535;
+  border-color:var(--line);
+}
+
+/* ── Dark mode: theme toggle button label — shows moon or sun icon */
+#themeToggle .theme-icon{font-size:.95rem;line-height:1;}
+
+/* Smooth colour transition when switching between light and dark mode.
+   The "transition" property only applies to colours (not layout properties)
+   so switching themes never causes elements to move or resize. */
+body,
+.card,.hero,.mode-tabs,.toggle-field,.summary-row,
+input,select,.footer-sig{
+  transition:background-color .25s ease, border-color .25s ease, color .2s ease;
+}
+/* ================================================================================
+   SECTION 3 — GLOBAL BASE
+   Applies to every element: remove browser default spacing, set base font.
+   ================================================================================ */
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
+
+/* ================================================================================
+   SECTION 4 — LAYOUT
+   Hero header bar, page wrapper, navigation tabs, and the two-panel
+   split that shows form on the left and results on the right after
+   the user clicks Calculate.
+   ================================================================================ */
+/* ── Hero header ── */
+.hero{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-mid) 55%,var(--primary-lt) 100%);padding:22px 24px 28px;position:relative;overflow:hidden;}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 78% 50%,rgba(212,160,36,.2) 0%,transparent 60%);pointer-events:none;}
+.hero-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.logo-wrap{flex-shrink:0;}
+.hero-text{flex:1;min-width:200px;}
+.hero-text h1{color:#fff;font-size:1.5rem;font-weight:800;letter-spacing:.3px;line-height:1.2;}
+.hero-text .subtitle{color:rgba(255,255,255,.72);font-size:0.85rem;margin-top:5px;}
+.hero-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center;}
+.year-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#fff;font-size:.75rem;font-weight:800;letter-spacing:1px;padding:5px 13px;border-radius:999px;}
+.flag-inner{font-size:1rem;line-height:1;}
+#yearBadgeText{font-size:.72rem;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;}
+.flag-badge{font-size:1.1rem;line-height:1;}
+.hero-actions{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;align-items:flex-start;}
+.pill-btn{padding:7px 14px;border:2px solid rgba(255,255,255,.45);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;backdrop-filter:blur(4px);}
+.pill-btn:hover{background:rgba(255,255,255,.25);border-color:#fff;}
+
+/* ── Page wrapper and two-panel split ── */
+.page{max-width:960px;margin:0 auto;padding:20px 16px 48px;}
+
+.main-tabs{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+.tab-btn{flex:1;min-width:140px;padding:11px;border:2px solid var(--line);background:var(--card);border-radius:8px;font-size:.92rem;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;}
+.tab-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;}
+
+/* Two-column split for single calc panel */
+.split-layout{display:grid;grid-template-columns:1fr;gap:20px;align-items:start;max-width:520px;margin:0 auto;transition:max-width .3s ease,grid-template-columns .3s ease;}
+.split-layout.has-results{grid-template-columns:1fr 1fr;max-width:960px;}
+@media(max-width:780px){.split-layout,.split-layout.has-results{grid-template-columns:1fr;max-width:520px;}}
+@media(max-width:780px){.split-layout{grid-template-columns:1fr;}}
+
+.panel-sticky{position:sticky;top:20px;}
+
+/* ================================================================================
+   SECTION 5 — CARDS
+   The white/dark surface that wraps each panel. Every card uses the same
+   border-radius, shadow, and padding.
+   ================================================================================ */
+/* ── Card surface ── */
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin-bottom:18px;}
+.card-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1.3px;color:var(--accent);margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid var(--accent-lt);}
+.card-title:not(:first-child){margin-top:6px;}
+
+/* ── Settings panel (hidden until the ⚙ button is clicked) ── */
+#settingsPanel{display:none;}
+#settingsPanel h2{font-size:1rem;color:var(--primary);margin:0 0 12px;border-bottom:2px solid var(--line);padding-bottom:9px;}
+#settingsPanel h3{font-size:.8rem;color:var(--primary);margin:16px 0 9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;}
+table.bracket-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+table.bracket-table th,table.bracket-table td{border:1px solid var(--line);padding:5px;text-align:center;}
+table.bracket-table th{background:var(--bg);color:var(--primary);font-weight:700;}
+table.bracket-table input{padding:4px;text-align:center;font-size:.8rem;}
+table.bracket-table td.nolimit{color:var(--muted);font-style:italic;}
+.table-wrap{overflow-x:auto;}
+
+/* ================================================================================
+   SECTION 6A — TYPOGRAPHY TOKENS (part of Section 1 variables, defined here
+   because they apply specifically to form and results text sizing)
+   These seven tokens ensure the form panel (left) and the results panel (right)
+   always use identical font sizes and weights — making both sides look consistent.
+   ================================================================================ */
+:root{
+  --t-section:  .66rem;   /* section headings (uppercase labels) */
+  --t-label:    .84rem;   /* field labels and row labels */
+  --t-body:     .88rem;   /* input text, result values, normal text */
+  --t-small:    .76rem;   /* hints, dim/secondary text, legend items */
+  --fw-label:   600;      /* font-weight for labels */
+  --fw-value:   700;      /* font-weight for values */
+  --fw-heading: 800;      /* font-weight for section headings */
+}
+
+/* ================================================================================
+   SECTION 6 — FORMS
+   Input fields, labels, hints, dropdowns, the Gross/Net mode tabs,
+   the Martyrs' Fund toggle switch, and the Calculate button.
+   ================================================================================ */
+/* ── Section title (gold uppercase bar above each group of fields) ── */
+.form-section-title{
+  font-size:var(--t-section);font-weight:var(--fw-heading);
+  text-transform:uppercase;letter-spacing:1.3px;
+  color:var(--accent);margin:18px 0 10px;
+  padding-bottom:6px;border-bottom:2px solid var(--accent-lt);
+  display:flex;align-items:center;gap:7px;
+}
+.form-section-title:first-of-type{margin-top:0;}
+
+.field{margin-bottom:14px;}
+.field label{
+  display:block;font-weight:var(--fw-label);
+  font-size:var(--t-label);margin-bottom:5px;color:var(--primary);
+}
+.field .hint{font-size:var(--t-small);color:var(--muted);margin-top:4px;}
+
+input[type="number"],input[type="text"],input[type="file"],select{
+  width:100%;padding:10px 12px;border:1.5px solid var(--line);
+  border-radius:7px;font-size:var(--t-body);color:var(--ink);
+  background:#FAFBFD;transition:border-color .15s;
+}
+input:focus,select:focus{
+  outline:none;border-color:var(--primary-lt);
+  box-shadow:0 0 0 3px rgba(32,79,130,.1);
+}
+select{
+  font-size:var(--t-small);padding:9px 28px 9px 10px;
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235E7185' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;
+}
+select option{font-size:var(--t-small);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+@media(max-width:600px){.grid-2,.grid-3{grid-template-columns:1fr;}}
+
+/* ── Gross ↔ Net mode selector tabs ── */
+.mode-tabs{display:flex;gap:0;background:var(--bg);border-radius:8px;padding:4px;margin-bottom:18px;}
+.mode-tab{flex:1;padding:9px;border:none;background:transparent;border-radius:6px;font-size:var(--t-body);font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;}
+.mode-tab.active{background:#fff;color:var(--primary);box-shadow:0 2px 8px rgba(11,37,69,.12);}
+
+/* ── Martyrs' Fund toggle switch ── */
+.toggle-field{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 13px;border:1.5px solid var(--line);border-radius:8px;background:#FAFBFD;margin-bottom:14px;cursor:pointer;user-select:none;transition:border-color .15s;}
+.toggle-field:hover{border-color:var(--primary-lt);}
+.toggle-label{font-weight:var(--fw-label);font-size:var(--t-label);color:var(--primary);}
+.toggle-sub{font-size:var(--t-small);color:var(--muted);margin-top:2px;}
+.toggle-switch{position:relative;flex-shrink:0;width:44px;height:24px;}
+.toggle-switch input{opacity:0;width:0;height:0;position:absolute;}
+.toggle-track{position:absolute;inset:0;border-radius:999px;background:var(--toggle-off);transition:background .2s;}
+.toggle-thumb{position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.25);}
+.toggle-switch input:checked~.toggle-track{background:var(--toggle-on);}
+.toggle-switch input:checked~.toggle-thumb{transform:translateX(20px);}
+
+/* ================================================================================
+   SECTION 7 — BUTTONS
+   Primary calculate button, action buttons (apply/export), secondary
+   (outlined) buttons, pill buttons in the header, and the reset button.
+   ================================================================================ */
+/* ── Primary calculate button ── */
+button.calculate{width:100%;padding:14px;background:linear-gradient(135deg,var(--primary) 0%,var(--primary-lt) 100%);color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:800;letter-spacing:.5px;cursor:pointer;transition:opacity .15s;margin-top:4px;}
+button.calculate:hover{opacity:.9;}
+button.action-btn{padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:.92rem;font-weight:700;cursor:pointer;transition:opacity .15s;width:100%;}
+button.action-btn:hover{opacity:.88;}
+button.secondary-btn{background:#fff;color:var(--primary);border:2px solid var(--primary);}
+button.secondary-btn:hover{background:var(--bg);}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;}
+.btn-row>*{flex:1;min-width:140px;}
+
+/* ================================================================================
+   SECTION 8 — RESULTS PANELS
+   The salary breakdown rows, dim (secondary) rows, deduction values,
+   and the highlighted net/total summary rows that appear after calculation.
+   ================================================================================ */
+.results-panel{display:none;}
+.results-panel.visible{display:block;}
+
+/* Section header — mirrors .form-section-title in weight/size/colour */
+.breakdown-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--line);
+}
+.breakdown-header h2{
+  font-size:var(--t-section);font-weight:var(--fw-heading);
+  text-transform:uppercase;letter-spacing:1.3px;
+  color:var(--primary);
+  display:flex;align-items:center;gap:8px;
+}
+.cost-header h2{color:var(--cost);}
+.year-chip{
+  font-size:.58rem;font-weight:800;letter-spacing:1px;
+  text-transform:uppercase;background:var(--accent);
+  color:#fff;padding:2px 8px;border-radius:999px;
+}
+.cost-header .year-chip{background:var(--cost);}
+
+/* Line rows — label matches form .field label in size/weight/colour */
+.line-row{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:6px 0;}
+.line-row .lbl{
+  font-size:var(--t-label);font-weight:var(--fw-label);
+  color:var(--primary);
+  flex:1;overflow:hidden;position:relative;
+}
+.line-row .lbl::after{
+  content:"";display:inline-block;width:100%;
+  border-bottom:1px dotted var(--line);margin:0 5px;
+}
+/* Values — same size as input text */
+.line-row .val{
+  font-size:var(--t-body);font-variant-numeric:tabular-nums;
+  font-weight:var(--fw-value);white-space:nowrap;
+  min-width:130px;text-align:right;color:var(--ink);
+}
+.line-row .val.ded{color:var(--bad);}
+.line-row .val.add{color:var(--cost);}
+
+/* Dim rows (SI wage basis amount, annual taxable) — match .field .hint */
+.line-row.dim .lbl{
+  font-size:var(--t-small);font-weight:400;color:var(--muted);
+}
+.line-row.dim .val{
+  font-size:var(--t-small);font-weight:500;color:var(--muted);
+}
+.divider{height:1px;background:var(--line);margin:8px 0;}
+
+/* Net / Total summary row */
+.summary-row{
+  margin-top:12px;padding:12px 16px;border-radius:8px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.summary-row.net-bg{background:linear-gradient(135deg,#E9F7F1,#D2EDDF);border:1.5px solid #9DCEBC;}
+.summary-row.cost-bg{background:linear-gradient(135deg,#EEE8FB,#E0D5F6);border:1.5px solid #BEB0E8;}
+.summary-row .s-lbl{
+  font-weight:var(--fw-heading);color:var(--primary);
+  font-size:var(--t-label);white-space:nowrap;
+}
+.summary-row .s-val{
+  font-variant-numeric:tabular-nums;font-weight:900;font-size:1.15rem;
+}
+.summary-row.net-bg .s-val{color:var(--good);}
+.summary-row.cost-bg .s-val{color:var(--cost);}
+
+/* ================================================================================
+   SECTION 9 — DONUT CHART
+   The circular chart showing how the gross salary is split between
+   take-home, social insurance, tax, and Martyrs' Fund.
+   ================================================================================ */
+.chart-section{margin-top:4px;}
+/* Chart title uses same section-title style as form and results headers */
+.chart-title{
+  font-size:var(--t-section);font-weight:var(--fw-heading);
+  text-transform:uppercase;letter-spacing:1.3px;
+  color:var(--accent);margin-bottom:14px;
+  padding-bottom:6px;border-bottom:2px solid var(--accent-lt);
+}
+.chart-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.donut-container{position:relative;flex-shrink:0;width:130px;height:130px;}
+.donut-container svg{width:100%;height:100%;}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;}
+.donut-center .dc-pct{font-size:1.2rem;font-weight:900;color:var(--good);}
+.donut-center .dc-lbl{font-size:var(--t-small);color:var(--muted);text-align:center;line-height:1.3;}
+.legend{flex:1;min-width:140px;}
+.legend-item{display:flex;align-items:center;gap:7px;padding:4px 0;border-bottom:1px dotted var(--line);}
+.legend-item:last-child{border-bottom:none;}
+.legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+/* Legend text matches form label */
+.legend-text{flex:1;font-size:var(--t-small);font-weight:var(--fw-label);color:var(--primary);}
+/* Legend value matches results .val */
+.legend-val{font-size:var(--t-small);font-weight:var(--fw-value);color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap;}
+/* Legend percentage matches dim secondary text */
+.legend-pct{font-size:var(--t-small);font-weight:500;color:var(--muted);min-width:40px;text-align:right;}
+
+/* ================================================================================
+   SECTION 10 — PRINT / PDF
+   The @media print rule hides everything except #printArea when the
+   user prints or saves as PDF. The full payslip layout is injected
+   into #printArea by the printBtn JavaScript handler.
+   ================================================================================ */
+#printArea{display:none;}
+@media print{
+  body *{visibility:hidden;}
+  #printArea,#printArea *{visibility:visible;}
+  #printArea{display:block;position:absolute;top:0;left:0;width:100%;padding:32px;font-family:"Segoe UI",Arial,sans-serif;}
+}
+/* Print-specific styles live inline in JS for portability */
+
+
+
+/* ── Reset button hover state ── */
+#resetBtn:hover{background:var(--bad) !important;color:#fff !important;box-shadow:0 4px 12px rgba(176,58,46,.3) !important;}
+
+/* ================================================================================
+   SECTION 11 — FOOTER
+   The branded footer with Ahmed Hassan's signature card, contact links,
+   and copyright notice.
+   ================================================================================ */
+.site-footer{text-align:center;padding:26px 16px 20px;border-top:1px solid var(--line);margin-top:4px;}
+.footer-sig{display:inline-flex;align-items:center;gap:14px;background:var(--card);border:1.5px solid var(--line);border-radius:999px;padding:10px 24px;box-shadow:var(--shadow);margin-bottom:14px;}
+.sig-name{font-weight:800;font-size:.95rem;color:var(--primary);}
+.sig-title{font-size:.72rem;color:var(--muted);margin-top:2px;}
+.footer-links{font-size:.78rem;color:var(--muted);margin-top:6px;}
+.footer-links a{color:var(--primary-lt);text-decoration:none;font-weight:600;}
+.footer-links a:hover{text-decoration:underline;}
+.footer-cr{font-size:.7rem;color:var(--muted);margin-top:8px;}
+
+/* ================================================================================
+   SECTION 12 — RTL (RIGHT-TO-LEFT)
+   Overrides for Arabic language mode. When the user switches to Arabic,
+   the page direction becomes rtl and these rules adjust spacing/alignment.
+   ================================================================================ */
+html[dir="rtl"] .line-row .lbl::after{margin:0 5px;}
+html[dir="rtl"] .hero-text h1{text-align:right;}
+html[dir="rtl"] table.bulk-table td,html[dir="rtl"] table.bulk-table th{text-align:left;}
+html[dir="rtl"] table.bulk-table td:first-child,html[dir="rtl"] table.bulk-table th:first-child{text-align:right;}
+
+/* =====================================================================
+   SECTION 13 — RESPONSIVE DESIGN — Mobile-First
+   -----------------------------------------------------------------------
+   How this works (plain language for non-engineers):
+   Media queries are CSS rules that only apply when the screen width
+   meets a condition. We write the BASE styles above for the SMALLEST
+   screens first, then each @media block ADDS or OVERRIDES rules as
+   the screen gets wider. Think of it as layers:
+
+   Layer 1 (base, no query): phones — simple single-column layout
+   Layer 2 (@media ≥ 480px): large phones / landscape — more breathing room
+   Layer 3 (@media ≥ 640px): small tablets — slightly wider form
+   Layer 4 (@media ≥ 780px): tablets / small laptops — two-panel split
+   Layer 5 (@media ≥ 960px): desktop — full max-width experience
+
+   IMPORTANT: No calculations, formulas, or JS logic are touched here.
+   This is purely about layout, spacing, font sizes, and touch targets.
+   ===================================================================== */
+
+/* ─────────────────────────────────────────────────────────────────────
+   BASE STYLES — applied to ALL screen sizes (mobile first).
+   These override/patch a few existing rules so mobile looks clean
+   even before the wider-screen queries kick in.
+   ───────────────────────────────────────────────────────────────────── */
+
+/* Ensure nothing causes horizontal overflow on any device */
+html, body { overflow-x: hidden; }
+
+/* Hero: tighten padding on small screens so it doesn't feel cramped */
+.hero { padding: 16px 14px 20px; }
+
+/* Hero inner: stack logo + text + actions vertically on small screens */
+.hero-inner {
+  flex-direction: column;   /* stack items top-to-bottom */
+  align-items: flex-start;  /* left-align all items */
+  gap: 10px;
+}
+
+/* Logo: slightly smaller on mobile */
+.logo-wrap svg { width: 48px; height: 48px; }
+
+/* Hero title: slightly smaller on mobile */
+.hero-text h1 { font-size: 1.2rem; }
+.hero-text .subtitle { font-size: .78rem; }
+
+/* Hero action buttons: wrap onto two rows if needed, full-row touch targets */
+.hero-actions {
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+/* Each pill button: minimum 44px tall for touch accessibility (Apple HIG standard) */
+.pill-btn {
+  padding: 10px 14px;
+  font-size: .78rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Page: reduce horizontal padding so cards reach close to screen edges */
+.page { padding: 14px 10px 40px; }
+
+/* Cards: reduce internal padding on mobile — more content visible */
+.card { padding: 16px 14px; margin-bottom: 14px; }
+
+/* Grids: always single column on mobile — the existing rule only targets ≤600px */
+.grid-2, .grid-3 { grid-template-columns: 1fr; gap: 10px; }
+
+/* Split layout: always single column on mobile — form then results below */
+.split-layout,
+.split-layout.has-results {
+  grid-template-columns: 1fr;
+  max-width: 100%;          /* fill the screen on mobile */
+  gap: 14px;
+}
+
+/* Sticky panel: disable sticky on mobile — it causes scroll jank */
+.panel-sticky { position: static; top: auto; }
+
+/* Results value column: reduce min-width so it fits on narrow screens */
+.line-row .val { min-width: 110px; font-size: .82rem; }
+
+/* Summary row (Net Salary / Total Cost): stack label and value on very narrow screens */
+.summary-row {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 10px 12px;
+}
+.summary-row .s-val { font-size: 1rem; }
+.summary-row .s-lbl { white-space: normal; } /* allow wrap if needed */
+
+/* Donut chart: stack chart + legend vertically on mobile */
+.chart-wrap { flex-direction: column; align-items: flex-start; gap: 14px; }
+.donut-container { width: 110px; height: 110px; }
+.legend { min-width: 100%; } /* legend spans full width below the donut */
+
+/* Settings bracket table: always scrollable */
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table.bracket-table { min-width: 360px; }  /* prevent collapse below readable width */
+
+/* Form inputs: tall enough for finger taps */
+input[type="text"],
+input[type="number"],
+select { padding: 11px 12px; min-height: 44px; font-size: .86rem; }
+
+/* Calculate button: large comfortable touch target */
+button.calculate { padding: 15px; font-size: .96rem; min-height: 50px; }
+
+/* Action buttons in rows: allow them to stack when space is tight */
+.btn-row { gap: 8px; }
+.btn-row > * { min-width: 0; flex: 1 1 calc(50% - 4px); }
+
+/* Print / payslip card: stack the two fields vertically on mobile */
+#printCard .grid-2 { grid-template-columns: 1fr; }
+
+/* Footer: tighten on mobile */
+.site-footer { padding: 18px 12px 16px; }
+.footer-sig { padding: 8px 16px; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.footer-links { font-size: .74rem; }
+
+/* Reset bar button: full-width comfortable touch target */
+#resetBar button { min-height: 44px; }
+
+/* Mode tabs: bigger touch targets */
+.mode-tab { padding: 11px 8px; min-height: 44px; font-size: .84rem; }
+
+/* Toggle field (Martyrs' Fund): comfortable for mobile tap */
+.toggle-field { padding: 12px 14px; }
+.toggle-switch { width: 46px; height: 26px; }
+.toggle-thumb { width: 20px; height: 20px; }
+.toggle-switch input:checked ~ .toggle-thumb { transform: translateX(20px); }
+
+
+/* ─────────────────────────────────────────────────────────────────────
+   LAYER 2 — Large phones & landscape orientation (≥ 480px)
+   Small improvements: a bit more padding, hero in row layout again
+   ───────────────────────────────────────────────────────────────────── */
+@media (min-width: 480px) {
+  .hero { padding: 18px 20px 24px; }
+  .hero-inner { flex-direction: row; align-items: center; gap: 14px; }
+  .logo-wrap svg { width: 54px; height: 54px; }
+  .hero-text h1 { font-size: 1.35rem; }
+  .hero-actions { width: auto; }
+
+  .page { padding: 16px 14px 44px; }
+  .card { padding: 18px 16px; }
+
+  /* Summary row: back to side-by-side layout on larger phones */
+  .summary-row {
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+  }
+  .summary-row .s-val { font-size: 1.05rem; }
+
+  /* Chart: side-by-side on larger phones if room allows */
+  .chart-wrap { flex-direction: row; align-items: center; }
+  .donut-container { width: 120px; height: 120px; }
+  .legend { min-width: 140px; }
+
+  /* Results value column: slightly more room */
+  .line-row .val { min-width: 120px; }
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────
+   LAYER 3 — Small tablets (≥ 640px)
+   Two-column grids return; hero fully expanded
+   ───────────────────────────────────────────────────────────────────── */
+@media (min-width: 640px) {
+  .hero { padding: 20px 22px 26px; }
+  .hero-text h1 { font-size: 1.45rem; }
+
+  .page { padding: 18px 16px 46px; }
+  .card { padding: 20px 18px; }
+
+  /* Two-column grids return for tablets */
+  .grid-2 { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid-3 { grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+  /* Print card: two columns return */
+  #printCard .grid-2 { grid-template-columns: 1fr 1fr; }
+
+  /* Split layout: still single column until 780px (results go below form) */
+  .split-layout { max-width: 560px; }
+
+  /* Results value column: full width again */
+  .line-row .val { min-width: 130px; font-size: var(--t-body); }
+
+  /* Summary value: full size */
+  .summary-row .s-val { font-size: 1.1rem; }
+
+  /* Donut chart: full size */
+  .donut-container { width: 130px; height: 130px; }
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────
+   LAYER 4 — Tablets and small laptops (≥ 780px)
+   The two-panel split layout activates: form left, results right
+   ───────────────────────────────────────────────────────────────────── */
+@media (min-width: 780px) {
+  .hero { padding: 22px 24px 28px; }
+  .hero-text h1 { font-size: 1.5rem; }
+
+  .page { padding: 20px 16px 48px; }
+  .card { padding: 22px; }
+
+  /* Two-panel split: form on left, results on right */
+  .split-layout.has-results {
+    grid-template-columns: 1fr 1fr;
+    max-width: 960px;
+  }
+
+  /* Sticky panel returns on desktop — keeps form visible while scrolling results */
+  .panel-sticky { position: sticky; top: 20px; }
+
+  /* Summary row: full comfortable layout */
+  .summary-row { padding: 12px 16px; }
+  .summary-row .s-val { font-size: 1.15rem; }
+
+  /* Btn rows: side-by-side */
+  .btn-row > * { flex: 1 1 auto; }
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────
+   LAYER 5 — Desktop (≥ 960px)
+   Full max-width experience, all desktop optimisations
+   ───────────────────────────────────────────────────────────────────── */
+@media (min-width: 960px) {
+  /* Before results appear, centre the form at a comfortable reading width */
+  .split-layout { max-width: 520px; margin: 0 auto; }
+
+  /* After calculate: full two-column layout */
+  .split-layout.has-results { max-width: 960px; }
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────
+   RTL RESPONSIVE ADJUSTMENTS
+   Arabic right-to-left layout needs a few overrides on mobile.
+   ───────────────────────────────────────────────────────────────────── */
+@media (max-width: 479px) {
+  html[dir="rtl"] .hero-inner { align-items: flex-end; }
+  html[dir="rtl"] .hero-text h1 { text-align: right; }
+  html[dir="rtl"] .hero-actions { justify-content: flex-end; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     SECTION: HEADER
+     Contains: Logo, app title, year/country badge, action buttons
+     (Settings, Dark Mode toggle, Language toggle)
+     ============================================================ -->
+<header class="hero">
+  <div class="hero-inner">
+
+    <!-- Logo: AH Monogram — Ahmed Hassan HR Expert -->
+    <div class="logo-wrap">
+      <svg width="66" height="66" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <lineargradient id="lgGold" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#F0C430"></stop>
+            <stop offset="100%" stop-color="#B8860B"></stop>
+          </lineargradient>
+          <lineargradient id="lgNavy" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#163860"></stop>
+            <stop offset="100%" stop-color="#0B2545"></stop>
+          </lineargradient>
+          <filter id="lgShadow" x="-15%" y="-15%" width="130%" height="130%">
+            <fedropshadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0,0,0,.4)"></fedropshadow>
+          </filter>
+        </defs>
+        <!-- Outer gold ring -->
+        <circle cx="33" cy="33" r="32" fill="url(#lgGold)" filter="url(#lgShadow)"></circle>
+        <!-- Inner navy disc -->
+        <circle cx="33" cy="33" r="27" fill="url(#lgNavy)"></circle>
+        <!-- Subtle inner accent ring -->
+        <circle cx="33" cy="33" r="24" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="1"></circle>
+        <!-- A — left stroke -->
+        <line x1="14" y1="47" x2="23" y2="21" stroke="url(#lgGold)" stroke-width="3.5" stroke-linecap="round"></line>
+        <!-- A — right stroke -->
+        <line x1="23" y1="21" x2="32" y2="47" stroke="url(#lgGold)" stroke-width="3.5" stroke-linecap="round"></line>
+        <!-- A — crossbar -->
+        <line x1="16.5" y1="38" x2="29.5" y2="38" stroke="url(#lgGold)" stroke-width="2.6" stroke-linecap="round"></line>
+        <!-- H — left vertical -->
+        <line x1="35" y1="21" x2="35" y2="47" stroke="url(#lgGold)" stroke-width="3.5" stroke-linecap="round"></line>
+        <!-- H — right vertical -->
+        <line x1="46" y1="21" x2="46" y2="47" stroke="url(#lgGold)" stroke-width="3.5" stroke-linecap="round"></line>
+        <!-- H — crossbar -->
+        <line x1="35" y1="33.5" x2="46" y2="33.5" stroke="url(#lgGold)" stroke-width="2.6" stroke-linecap="round"></line>
+        <!-- Gold underline accent -->
+        <rect x="14" y="51" width="38" height="2.5" rx="1.25" fill="url(#lgGold)" opacity=".7"></rect>
+      </svg>
+    </div>
+
+    <div class="hero-text">
+      <h1 data-i18n="appTitle">Egypt Salary Calculator</h1>
+      <div class="subtitle" data-i18n="appSubtitle">Gross ⇄ Net · Full tax &amp; social insurance breakdown · Egyptian payroll regulations</div>
+      <div class="hero-badges">
+        <span class="year-badge" id="yearBadge">
+          <img src="data:image/png;base64,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" alt="Egypt" style="width:18px;height:18px;border-radius:50%;object-fit:cover;flex-shrink:0;vertical-align:middle;">
+          <span id="yearBadgeText" style="margin-left:2px;">Egypt <span id="yearNum">2026</span></span>
+        </span>
+      </div>
+    </div>
+
+    <div class="hero-actions">
+      <button class="pill-btn" id="settingsToggle" data-i18n="btnSettings">⚙ Settings</button>
+      <!-- Dark / Light mode toggle button.
+           The icon and label are swapped by JS when the theme changes. -->
+      <button class="pill-btn" id="themeToggle" aria-label="Toggle dark mode" title="Toggle Dark / Light Mode"><span class="theme-icon">🌙</span> Dark</button>
+      <button class="pill-btn" id="langToggle">العربية</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     SECTION: MAIN PAGE CONTENT WRAPPER
+     Everything inside .page is centred and max-width constrained.
+     ============================================================ -->
+<div class="page">
+
+  <!-- ══ MAIN NAV ══════════════════════════════════════════════════════ -->
+  <div class="tabs main-tabs">
+    <button class="tab-btn active" id="navSingle" data-i18n="tabSingle">Single Calculation</button>
+  </div>
+
+  <!-- ============================================================
+       SECTION: SETTINGS PANEL
+       Hidden by default. Revealed when the ⚙ Settings button
+       is clicked. Contains editable payroll rules (tax brackets,
+       social insurance rates, fund rates). Supports JSON export
+       and import for archiving yearly rule changes.
+       ============================================================ -->
+  <div class="card" id="settingsPanel">
+    <h2 data-i18n="settingsTitle">Calculator Settings</h2>
+    <p class="hint" style="margin-bottom:10px;" data-i18n="settingsYearNote">These settings represent a specific payroll year. Export them as a JSON archive, then import to load a different year's rules.</p>
+
+    <h3 data-i18n="settingsExemptions">Personal Tax Exemptions (Annual, EGP)</h3>
+    <div class="grid-3">
+      <div class="field"><label data-i18n="settingsExemptStd">Standard</label><input type="number" id="setExemptNormal"></div>
+      <div class="field"><label data-i18n="settingsExemptDisability">Disability</label><input type="number" id="setExemptDisabled"></div>
+      <div class="field"><label data-i18n="settingsFreelanceTax">Freelance Flat Tax %</label><input type="number" step="0.01" id="setFreelanceTaxRate"></div>
+    </div>
+
+    <h3 data-i18n="settingsSI">Social Insurance</h3>
+    <div class="field"><label data-i18n="settingsSICap">Insurance Wage Cap (Monthly, EGP)</label><input type="number" id="setSICap"></div>
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:6px;">
+      <div style="padding-top:8px;font-size:.78rem;font-weight:700;color:var(--muted);" data-i18n="settingsCategory">Category</div>
+      <div style="font-size:.78rem;font-weight:700;color:var(--muted);text-align:center;" data-i18n="settingsEmployeePct">Employee %</div>
+      <div style="font-size:.78rem;font-weight:700;color:var(--muted);text-align:center;" data-i18n="settingsEmployerPct">Employer %</div>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:6px;align-items:center;">
+      <div style="font-size:.8rem;color:var(--primary);font-weight:600;" data-i18n="settingsSINormal">Normal Subscription</div>
+      <div><input type="number" step="0.01" id="setSINormalEmp"></div>
+      <div><input type="number" step="0.01" id="setSINormalEmr"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:6px;align-items:center;">
+      <div style="font-size:.8rem;color:var(--primary);font-weight:600;" data-i18n="settingsSIAbove60">Post Retirement (60+)</div>
+      <div><input type="number" step="0.01" id="setSIAbove60Emp"></div>
+      <div><input type="number" step="0.01" id="setSIAbove60Emr"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:6px;align-items:center;">
+      <div style="font-size:.8rem;color:var(--primary);font-weight:600;" data-i18n="settingsSIEmpSub">Employer Subscription</div>
+      <div><input type="number" step="0.01" id="setSIEmpSubEmp"></div>
+      <div><input type="number" step="0.01" id="setSIEmpSubEmr"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:6px;align-items:center;">
+      <div style="font-size:.8rem;color:var(--primary);font-weight:600;" data-i18n="settingsSIUnder18">Workers Under 18</div>
+      <div><input type="number" step="0.01" id="setSIUnder18Emp"></div>
+      <div><input type="number" step="0.01" id="setSIUnder18Emr"></div>
+    </div>
+
+    <h3 data-i18n="settingsFunds">Other Funds</h3>
+    <div class="grid-3">
+      <div class="field"><label data-i18n="settingsMartyrsRate">Martyrs' Fund Rate (%)</label><input type="number" step="0.0001" id="setMartyrsRate"></div>
+      <div class="field"><label data-i18n="settingsEmergencyRate">Emergency Fund Rate (%)</label><input type="number" step="0.01" id="setEmergencyRate"></div>
+      <div class="field"><label data-i18n="settingsEmergencyCap">Emergency Fund Wage Cap (EGP)</label><input type="number" id="setEmergencyCap"></div>
+    </div>
+
+    <h3 data-i18n="settingsBrackets">Income Tax Brackets (Annual)</h3>
+    <p class="hint" style="margin-bottom:8px;" data-i18n="settingsBracketsHint">Tax = (Income − Base) × Rate% + Fixed Add-on, applied for income up to each threshold.</p>
+    <div class="table-wrap">
+      <table class="bracket-table" id="bracketTable">
+        <thead><tr><th data-i18n="settingsUpTo">Up To</th><th data-i18n="settingsBase">Base</th><th data-i18n="settingsRate">Rate %</th><th data-i18n="settingsAddOn">Add-on</th></tr></thead>
+        <tbody><tr><td><input type="number" step="1" data-row="0" data-field="upTo"></td><td><input type="number" step="1" data-row="0" data-field="base"></td><td><input type="number" step="0.001" data-row="0" data-field="rate"></td><td><input type="number" step="1" data-row="0" data-field="addOn"></td></tr><tr><td><input type="number" step="1" data-row="1" data-field="upTo"></td><td><input type="number" step="1" data-row="1" data-field="base"></td><td><input type="number" step="0.001" data-row="1" data-field="rate"></td><td><input type="number" step="1" data-row="1" data-field="addOn"></td></tr><tr><td><input type="number" step="1" data-row="2" data-field="upTo"></td><td><input type="number" step="1" data-row="2" data-field="base"></td><td><input type="number" step="0.001" data-row="2" data-field="rate"></td><td><input type="number" step="1" data-row="2" data-field="addOn"></td></tr><tr><td><input type="number" step="1" data-row="3" data-field="upTo"></td><td><input type="number" step="1" data-row="3" data-field="base"></td><td><input type="number" step="0.001" data-row="3" data-field="rate"></td><td><input type="number" step="1" data-row="3" data-field="addOn"></td></tr><tr><td><input type="number" step="1" data-row="4" data-field="upTo"></td><td><input type="number" step="1" data-row="4" data-field="base"></td><td><input type="number" step="0.001" data-row="4" data-field="rate"></td><td><input type="number" step="1" data-row="4" data-field="addOn"></td></tr><tr><td><input type="number" step="1" data-row="5" data-field="upTo"></td><td><input type="number" step="1" data-row="5" data-field="base"></td><td><input type="number" step="0.001" data-row="5" data-field="rate"></td><td><input type="number" step="1" data-row="5" data-field="addOn"></td></tr><tr><td><input type="number" step="1" data-row="6" data-field="upTo"></td><td><input type="number" step="1" data-row="6" data-field="base"></td><td><input type="number" step="0.001" data-row="6" data-field="rate"></td><td><input type="number" step="1" data-row="6" data-field="addOn"></td></tr><tr><td><input type="number" step="1" data-row="7" data-field="upTo"></td><td><input type="number" step="1" data-row="7" data-field="base"></td><td><input type="number" step="0.001" data-row="7" data-field="rate"></td><td><input type="number" step="1" data-row="7" data-field="addOn"></td></tr><tr><td><input type="number" step="1" data-row="8" data-field="upTo"></td><td><input type="number" step="1" data-row="8" data-field="base"></td><td><input type="number" step="0.001" data-row="8" data-field="rate"></td><td><input type="number" step="1" data-row="8" data-field="addOn"></td></tr><tr><td><input type="number" step="1" data-row="9" data-field="upTo"></td><td><input type="number" step="1" data-row="9" data-field="base"></td><td><input type="number" step="0.001" data-row="9" data-field="rate"></td><td><input type="number" step="1" data-row="9" data-field="addOn"></td></tr><tr><td class="nolimit">No Limit</td><td><input type="number" step="1" data-row="10" data-field="base"></td><td><input type="number" step="0.001" data-row="10" data-field="rate"></td><td><input type="number" step="1" data-row="10" data-field="addOn"></td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="btn-row" style="margin-top:16px;">
+      <button class="action-btn" id="applySettingsBtn" data-i18n="settingsApply">Apply Settings</button>
+      <button class="action-btn secondary-btn" id="resetSettingsBtn" data-i18n="settingsReset">Reset to 2026 Defaults</button>
+    </div>
+    <div class="btn-row" style="margin-top:8px;">
+      <button class="action-btn secondary-btn" id="exportSettingsBtn" data-i18n="settingsExport">Export Settings (Year Archive)</button>
+      <label class="action-btn secondary-btn" style="text-align:center;cursor:pointer;" data-i18n="settingsImport">Import Settings (Load a Year)</label>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SECTION: SINGLE CALCULATION
+       Left panel: input form (salary, tax type, SI settings).
+       Right panel: results (appears after Calculate is clicked).
+       On mobile, both panels stack vertically.
+       ============================================================ -->
+  <div id="singlePanel">
+    <div class="split-layout">
+
+      <!-- INPUT FORM PANEL (left on desktop, top on mobile)
+           Fields: salary input, tax exemption category, Martyrs'
+           Fund toggle, social insurance wage basis and category. -->
+      <div class="panel-sticky">
+        <div class="card">
+          <div class="mode-tabs">
+            <button class="mode-tab active" id="tabGrossToNet" data-i18n="tabGrossToNet">Gross → Net</button>
+            <button class="mode-tab" id="tabNetToGross" data-i18n="tabNetToGross">Net → Gross</button>
+          </div>
+
+          <div class="form-section-title" data-i18n="sectionSalary">Salary Information</div>
+          <div class="field">
+            <label id="salaryLabel" data-i18n="salaryLabelGross" for="salaryInput">Gross Monthly Salary (EGP)</label>
+            <input type="text" id="salaryInput" inputmode="decimal" autocomplete="off" style="font-variant-numeric:tabular-nums;letter-spacing:.3px;" placeholder="E.g. 15,000">
+            <div class="hint" id="salaryHint" data-i18n="salaryHintGross">Enter the employee's full monthly gross salary before any deductions.</div>
+          </div>
+
+          <div class="form-section-title" data-i18n="sectionTax">Tax Settings</div>
+          <div class="field">
+            <label data-i18n="taxTypeLabel" for="taxType">Tax Exemption Category</label>
+            <select id="taxType">
+              <option value="normal" selected="" data-i18n="taxTypeStd">Standard</option>
+              <option value="disabled" data-i18n="taxTypeDisability">Disability Exemption (5%)</option>
+              <option value="freelance" data-i18n="taxTypeFreelance">Freelance &amp; Consulting Tax (10% Flat, No SI)</option>
+            </select>
+            <div class="hint" id="taxHint" data-i18n="taxHintStd">Standard personal exemption applies — EGP 20,000 per year.</div>
+          </div>
+
+          <label class="toggle-field" id="martyrsToggleField" for="martyrsToggle">
+            <div>
+              <div class="toggle-label" data-i18n="martyrsLabel">Martyrs' Fund Calculation</div>
+              <div class="toggle-sub" data-i18n="martyrsSub">Include Martyrs' Fund deduction in this calculation</div>
+            </div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="martyrsToggle" checked="">
+              <div class="toggle-track"></div>
+              <div class="toggle-thumb"></div>
+            </div>
+          </label>
+
+          <div class="form-section-title" id="siSectionTitle" data-i18n="sectionSI">Social Insurance Settings</div>
+          <div id="siFields">
+            <div class="grid-2" style="align-items:end;">
+              <div class="field" style="margin-bottom:0;">
+                <label data-i18n="siWageBasisLabel" for="siWageBasis">Social Insurance Wage Basis</label>
+                <select id="siWageBasis">
+                  <option value="normal" selected="" data-i18n="siWageNormal">Standard (Full Salary, Capped)</option>
+                  <option value="allowances30" data-i18n="siWageAllow30">Allowance-Adjusted (30% Excl., Capped)</option>
+                  <option value="not_insured" data-i18n="siWageNotInsured">Not Enrolled in Social Insurance</option>
+                  <option value="custom" data-i18n="siWageCustom">Custom Wage (Manual Entry)</option>
+                </select>
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label data-i18n="siSubLabel" for="siSubscription">Social Insurance Subscription Category</label>
+                <select id="siSubscription">
+                  <option value="normal" selected="" data-i18n="siSubNormal">Normal Subscription</option>
+                  <option value="above60" data-i18n="siSubAbove60">Post Retirement Above 60 Years</option>
+                  <option value="employer_subscription" data-i18n="siSubEmployer">Employer Subscription</option>
+                  <option value="under18" data-i18n="siSubUnder18">Workers Under 18 Years</option>
+                </select>
+              </div>
+            </div>
+            <div class="field" id="customWageField" style="display:none;">
+              <label data-i18n="customWageLabel" for="customWageInput">Custom Social Insurance Wage (EGP)</label>
+              <input type="number" id="customWageInput" min="0" step="1" placeholder="e.g. 12,000">
+              <div class="hint" data-i18n="customWageHint">This exact amount is used as the insurance wage and combined with the subscription category above.</div>
+            </div>
+          </div>
+
+          <button class="calculate" id="calcBtn" data-i18n="calcBtn">Calculate Salary</button>
+        </div>
+
+        <!-- ── PRINT / SAVE AS PDF CARD ── -->
+        <div class="card results-panel" id="printCard">
+          <div class="grid-2">
+            <div class="field">
+              <label data-i18n="companyNameLabel" for="companyName">Company Name (for Payslip PDF)</label>
+              <input type="text" id="companyName" placeholder="e.g. Acme Egypt LLC">
+            </div>
+            <div class="field" style="display:flex;align-items:flex-end;">
+              <button class="action-btn secondary-btn" id="printBtn" data-i18n="printBtn">🖨 Save as PDF / Print</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Results breakdown + chart -->
+      <div id="resultsColumn">
+
+        <!-- RESET BAR: appears at top of results column after calculation.
+             Clicking it clears all inputs and hides results,
+             returning the form to its initial centred state. -->
+        <div class="results-panel" id="resetBar" style="margin-bottom:14px;display:none;">
+          <button id="resetBtn" style="
+            width:100%;padding:11px 16px;
+            background:#fff;color:var(--bad);
+            border:1.5px solid var(--bad);
+            border-radius:8px;font-size:.88rem;font-weight:700;
+            cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+            transition:all .15s;box-shadow:var(--shadow);
+          ">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 .49-4.5"></path></svg>
+            New Calculation — Reset
+          </button>
+        </div>
+
+        <!-- ── RESULTS: EMPLOYEE SALARY BREAKDOWN ── -->
+        <div class="card results-panel" id="resultsCard">
+          <div class="breakdown-header">
+            <h2><span data-i18n="resultsHeader">Salary Breakdown</span><span class="year-chip" id="resultYearBadge">2026</span></h2>
+          </div>
+
+          <div class="line-row">
+            <span class="lbl" data-i18n="rowGross">Gross Monthly Salary</span>
+            <span class="val" id="outGross">—</span>
+          </div>
+          <div class="line-row dim" id="rowSIWageWrap">
+            <span class="lbl" data-i18n="rowInsurableWage">Social Insurance Wage Basis Amount</span>
+            <span class="val" id="outInsurableWage">—</span>
+          </div>
+          <div class="line-row" id="rowSIWrap">
+            <span class="lbl" data-i18n="rowEmployeeSI">Social Insurance — Employee Share</span>
+            <span class="val ded" id="outSI">—</span>
+          </div>
+          <div class="divider"></div>
+          <div class="line-row dim">
+            <span class="lbl" data-i18n="rowAnnualTaxable">Annual Taxable Income</span>
+            <span class="val" id="outAnnualTaxable">—</span>
+          </div>
+          <div class="line-row">
+            <span class="lbl" id="taxLabel" data-i18n="rowIncomeTax">Monthly Income Tax</span>
+            <span class="val ded" id="outTax">—</span>
+          </div>
+          <div class="line-row" id="martyrsRow">
+            <span class="lbl" data-i18n="rowMartyrsEmployee">Martyrs' Fund — Employee Share</span>
+            <span class="val ded" id="outMartyrsEmployee">—</span>
+          </div>
+          <div class="summary-row net-bg">
+            <span class="s-lbl" data-i18n="rowNet">Net Monthly Salary</span>
+            <span class="s-val" id="outNet">—</span>
+          </div>
+        </div>
+
+        <!-- ── RESULTS: TOTAL EMPLOYER COST ── -->
+        <div class="card results-panel cost-card" id="costCard">
+          <div class="breakdown-header cost-header">
+            <h2><span data-i18n="costHeader">Total Employer Cost</span><span class="year-chip" id="costYearBadge">2026</span></h2>
+          </div>
+          <div class="line-row">
+            <span class="lbl" data-i18n="rowGross">Gross Monthly Salary</span>
+            <span class="val" id="outGross2">—</span>
+          </div>
+          <div class="line-row" id="rowEmpSIWrap">
+            <span class="lbl" data-i18n="rowEmployerSI">Social Insurance — Employer Share</span>
+            <span class="val add" id="outEmployerSI">—</span>
+          </div>
+          <div class="line-row" id="costMartyrsRow">
+            <span class="lbl" data-i18n="rowMartyrsEmployer">Martyrs' Fund — Employer Share</span>
+            <span class="val add" id="outMartyrsEmployer">—</span>
+          </div>
+          <div class="line-row" id="rowEmergencyWrap">
+            <span class="lbl" data-i18n="rowEmergencyFund">Emergency Fund — Employer Share</span>
+            <span class="val add" id="outEmergencyFund">—</span>
+          </div>
+          <div class="summary-row cost-bg">
+            <span class="s-lbl" data-i18n="rowTotalCost">Total Monthly Cost to Employer</span>
+            <span class="s-val" id="outCost">—</span>
+          </div>
+        </div>
+
+        <!-- ── RESULTS: NET SALARY COMPOSITION CHART ── -->
+        <div class="card results-panel" id="chartCard">
+          <div class="chart-title" data-i18n="chartTitle">Net Salary Composition</div>
+          <div class="chart-wrap">
+            <div class="donut-container">
+              <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="38" fill="none" stroke="#E8EEF5" stroke-width="14"></circle>
+                <circle id="seg-net" cx="50" cy="50" r="38" fill="none" stroke-width="14" stroke-linecap="butt" transform="rotate(-90 50 50)"></circle>
+                <circle id="seg-si" cx="50" cy="50" r="38" fill="none" stroke-width="14" stroke-linecap="butt" transform="rotate(-90 50 50)"></circle>
+                <circle id="seg-tax" cx="50" cy="50" r="38" fill="none" stroke-width="14" stroke-linecap="butt" transform="rotate(-90 50 50)"></circle>
+                <circle id="seg-martyrs" cx="50" cy="50" r="38" fill="none" stroke-width="14" stroke-linecap="butt" transform="rotate(-90 50 50)"></circle>
+              </svg>
+              <div class="donut-center">
+                <div class="dc-pct" id="dcNetPct">—</div>
+                <div class="dc-lbl" data-i18n="chartNetLabel">Take-home</div>
+              </div>
+            </div>
+            <div class="legend" id="chartLegend"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SECTION: FUTURE HR TOOLS (PLACEHOLDER)
+       ─────────────────────────────────────────────────────────
+       The modules below are planned for future development.
+       Each is wrapped in a hidden <div> with a clear ID and
+       data-module attribute so they can be enabled individually
+       by uncommenting the display style or wiring up a nav tab.
+
+       TO ADD A NEW MODULE:
+       1. Copy one of the placeholder <div> blocks below.
+       2. Give it a unique id and data-module name.
+       3. Build the module's HTML inside the div.
+       4. Add a tab button in the main-tabs nav (like navSingle).
+       5. Wire the tab to show/hide panels in the JS init section.
+       ============================================================ -->
+  <div id="futureModules" style="display:none;" aria-hidden="true">
+
+    <!-- ── FUTURE MODULE 1: Gross-Up Calculator
+         Purpose: Start from a desired net salary and calculate what
+         gross must be offered so the employee takes home exactly that
+         amount after all deductions.
+         Status: Planned — not yet implemented. -->
+    <div id="moduleGrossUp" data-module="gross-up-calculator" style="display:none;">
+      <!-- TODO: Gross-Up Calculator UI goes here -->
+    </div>
+
+    <!-- ── FUTURE MODULE 2: Social Insurance Calculator
+         Purpose: Standalone tool to compute employee and employer
+         social insurance contributions across all subscription
+         categories and wage basis options.
+         Status: Planned — not yet implemented. -->
+    <div id="moduleSocialInsurance" data-module="social-insurance-calculator" style="display:none;">
+      <!-- TODO: Social Insurance Calculator UI goes here -->
+    </div>
+
+    <!-- ── FUTURE MODULE 3: End-of-Service Calculator
+         Purpose: Calculate the end-of-service gratuity or indemnity
+         owed to an employee based on years of service, last salary,
+         and the applicable Egyptian labour law rules.
+         Status: Planned — not yet implemented. -->
+    <div id="moduleEndOfService" data-module="end-of-service-calculator" style="display:none;">
+      <!-- TODO: End-of-Service Calculator UI goes here -->
+    </div>
+
+    <!-- ── FUTURE MODULE 4: Leave Encashment Calculator
+         Purpose: Convert accrued unused leave days into a cash
+         equivalent amount, based on the employee's daily rate.
+         Status: Planned — not yet implemented. -->
+    <div id="moduleLeaveEncashment" data-module="leave-encashment-calculator" style="display:none;">
+      <!-- TODO: Leave Encashment Calculator UI goes here -->
+    </div>
+
+    <!-- ── FUTURE MODULE 5: Overtime Calculator
+         Purpose: Calculate overtime pay based on hours worked
+         beyond the standard working day/week under Egyptian
+         labour law (1.35× or 1.70× depending on day/night).
+         Status: Planned — not yet implemented. -->
+    <div id="moduleOvertime" data-module="overtime-calculator" style="display:none;">
+      <!-- TODO: Overtime Calculator UI goes here -->
+    </div>
+
+  </div>
+  <!-- /futureModules -->
+
+  <!-- ============================================================
+       SECTION: FOOTER
+       Ahmed Hassan's branded signature, LinkedIn, email, and
+       full copyright / terms of use notice.
+       ============================================================ -->
+    <footer class="site-footer">
+
+    <!-- Branded signature badge -->
+    <div class="footer-sig">
+      <svg width="40" height="40" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <lineargradient id="flgG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F0C430"></stop><stop offset="100%" stop-color="#B8860B"></stop></lineargradient>
+          <lineargradient id="flgN" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#163860"></stop><stop offset="100%" stop-color="#0B2545"></stop></lineargradient>
+        </defs>
+        <circle cx="33" cy="33" r="32" fill="url(#flgG)"></circle>
+        <circle cx="33" cy="33" r="27" fill="url(#flgN)"></circle>
+        <line x1="14" y1="47" x2="23" y2="21" stroke="url(#flgG)" stroke-width="3.5" stroke-linecap="round"></line>
+        <line x1="23" y1="21" x2="32" y2="47" stroke="url(#flgG)" stroke-width="3.5" stroke-linecap="round"></line>
+        <line x1="16.5" y1="38" x2="29.5" y2="38" stroke="url(#flgG)" stroke-width="2.6" stroke-linecap="round"></line>
+        <line x1="35" y1="21" x2="35" y2="47" stroke="url(#flgG)" stroke-width="3.5" stroke-linecap="round"></line>
+        <line x1="46" y1="21" x2="46" y2="47" stroke="url(#flgG)" stroke-width="3.5" stroke-linecap="round"></line>
+        <line x1="35" y1="33.5" x2="46" y2="33.5" stroke="url(#flgG)" stroke-width="2.6" stroke-linecap="round"></line>
+        <rect x="14" y="51" width="38" height="2.5" rx="1.25" fill="url(#flgG)" opacity=".7"></rect>
+      </svg>
+      <div>
+        <div class="sig-name">Ahmed Hassan</div>
+        <div class="sig-title">HR Expert</div>
+      </div>
+    </div>
+
+    <!-- Contact and social links -->
+    <div class="footer-links">
+      <a href="https://www.linkedin.com/in/ahmedhassan-ahmedhassan" target="_blank" rel="noopener">🔗 LinkedIn — Ahmed Hassan</a>
+      &nbsp;·&nbsp;
+      <a href="mailto:ahmedhr2008@gmail.com">✉ ahmedhr2008@gmail.com</a>
+    </div>
+
+    <!-- Copyright and legal notice -->
+    <div class="footer-cr">
+      © <span id="footerYear">2026</span> Ahmed Hassan. All Rights Reserved.<br>
+      Designed and Developed by Ahmed Hassan.<br>
+      This tool is intended for educational and professional use.
+      Reproduction, modification, redistribution, or commercial use
+      without written permission from the owner is prohibited.
+    </div>
+
+  </footer>
+</div>
+
+<!-- ============================================================
+     HIDDEN PRINT AREA
+     This div is invisible on screen. When the user clicks
+     "Save as PDF / Print", the JS fills it with a formatted
+     payslip layout and triggers the browser's print dialog.
+     ============================================================ -->
+<div id="printArea"></div>
+
+<script>
+/* ================================================================================
+   JAVASCRIPT — APPLICATION LOGIC
+   ─────────────────────────────────────────────────────────────────────────────────
+   Section A · Configuration       — Payroll year constant and default rules object
+   Section B · Social Insurance    — Wage-basis and contribution calculators
+   Section C · Income Tax          — Progressive bracket tax engine
+   Section D · Core Calculation    — Gross→Net and Net→Gross (binary search)
+   Section E · Formatting          — Currency and percentage formatters
+   Section F · Translations (i18n) — English and Arabic text strings
+   Section G · UI — Form Controls  — Mode switching, tax type hints, SI wage toggle
+   Section H · UI — Chart          — Donut chart drawing and legend builder
+   Section I · UI — Results        — showResults() populates the right panel
+   Section J · UI — Calculate      — runCalculation() orchestrates the full flow
+   Section K · UI — Reset          — Clears inputs and hides results
+   Section L · PDF Print           — Payslip layout injected before window.print()
+   Section M · Navigation          — Settings panel toggle, main nav wiring
+   Section N · Settings Panel      — Load/read/apply/export/import payroll rules
+   Section O · Salary Input        — Live thousand-separator formatter
+   Section P · Theme Management    — Dark/light mode toggle with localStorage
+   Section Q · Initialisation      — Runs once on page load
+   ================================================================================ */
+
+/* ================================================================================
+   SECTION A — CONFIGURATION
+   PAYROLL_YEAR is the year shown on badges and stamped on exported files.
+   Change this constant when updating rules for a new year.
+   ================================================================================ */
+const PAYROLL_YEAR = "2026";
+
+/* ── getDefaultRules()
+   Returns a fresh copy of the 2026 payroll rules object.
+   Called on first load and whenever the user resets settings.
+   Each property maps to a real Egyptian regulation:
+     - exemptionAnnual: personal tax exemption in EGP/year
+     - siWageCap: maximum monthly salary for social insurance calculation
+     - taxBrackets: the progressive income-tax table
+   ── */
+function getDefaultRules() {
+  return {
+    year: PAYROLL_YEAR,
+    exemptionAnnual: { normal: 20000, disabled: 30000 },
+    freelanceTaxRate: 0.10,
+    siWageCap: 16700,
+    martyrsFundRate: 0.0005,
+    emergencyFundRate: 0.01,
+    emergencyFundWageCap: 2720,
+    siRates: {
+      normal:               { employee: 0.11,  employer: 0.1875 },
+      above60:              { employee: 0.01,  employer: 0.0475 },
+      employer_subscription:{ employee: 0.21,  employer: 0      },
+      under18:              { employee: 0,     employer: 0.015  }
+    },
+    taxBrackets: [
+      { upTo: 40000,   base: 0,       rate: 0,     addOn: 0      },
+      { upTo: 55000,   base: 40000,   rate: 0.10,  addOn: 0      },
+      { upTo: 70000,   base: 55000,   rate: 0.15,  addOn: 1500   },
+      { upTo: 200000,  base: 70000,   rate: 0.20,  addOn: 3750   },
+      { upTo: 400000,  base: 200000,  rate: 0.225, addOn: 29750  },
+      { upTo: 600000,  base: 400000,  rate: 0.25,  addOn: 74750  },
+      { upTo: 700000,  base: 400000,  rate: 0.25,  addOn: 78750  },
+      { upTo: 800000,  base: 400000,  rate: 0.25,  addOn: 81500  },
+      { upTo: 900000,  base: 400000,  rate: 0.25,  addOn: 85000  },
+      { upTo: 1200000, base: 400000,  rate: 0.25,  addOn: 90000  },
+      { upTo: null,    base: 1200000, rate: 0.275, addOn: 300000 }
+    ]
+  };
+}
+let RULES = getDefaultRules();
+
+/* ================================================================================
+   SECTION B — SOCIAL INSURANCE FUNCTIONS
+   getInsuranceWage() determines the wage amount contributions are based on.
+   getSIShares() multiplies the wage by the employee/employer rates.
+   ================================================================================ */
+/* ── getInsuranceWage(gross, wageBasis, customWage)
+   Applies the correct wage rule based on the dropdown selection:
+     'normal'       → gross salary, capped at siWageCap (EGP 16,700 in 2026)
+     'allowances30' → gross / 1.3 (30% allowance excluded from insurable base)
+     'custom'       → manually entered wage, no cap applied
+     'not_insured'  → returns 0 (no social insurance contributions)
+   ── */
+function getInsuranceWage(gross, basis, custom) {
+  if (basis === 'normal')       return Math.min(gross, RULES.siWageCap);
+  if (basis === 'allowances30') return Math.min(gross / 1.3, RULES.siWageCap);
+  if (basis === 'custom')       return Math.max(0, custom || 0);
+  return 0;
+}
+/* ── getSIShares(insuranceWage, subscriptionType)
+   Looks up the employee and employer percentage rates for the chosen
+   subscription category, then multiplies them by the insurance wage.
+   Returns { employee: EGP amount, employer: EGP amount }.
+   ── */
+function getSIShares(wage, sub) {
+  const r = RULES.siRates[sub] || { employee: 0, employer: 0 };
+  return { employee: wage * r.employee, employer: wage * r.employer };
+}
+
+/* ================================================================================
+   SECTION C — INCOME TAX FUNCTION
+   Progressive brackets: each EGP slice of income is taxed at a different rate.
+   The "bracket cliff" above EGP 600k/year gradually removes lower-rate benefits
+   for high earners, implemented via the addOn column in the taxBrackets array.
+   ================================================================================ */
+/* ── calcAnnualTax(annualTaxableIncome)
+   Finds the applicable bracket and applies: Tax = (income − base) × rate + addOn.
+   Returns the ANNUAL tax in EGP. Divide by 12 for the monthly amount.
+   ── */
+function calcAnnualTax(t) {
+  for (const b of RULES.taxBrackets)
+    if (b.upTo === null || t <= b.upTo) return (t - b.base) * b.rate + b.addOn;
+  return 0;
+}
+
+/* ================================================================================
+   SECTION D — CORE PAYROLL CALCULATION
+   computeFromGross() → the main engine: applies all deductions in sequence.
+   computeFromNet()   → binary search: finds the gross that yields a target net.
+   ================================================================================ */
+/* ── computeFromGross(gross, taxType, wageBasis, subscriptionType, includeMartyrs, customWage)
+   Computes the full payroll breakdown in 8 steps:
+     1. Social insurance wage (capped / adjusted / custom / zero)
+     2. Employee + employer SI contributions
+     3. Personal tax exemption (20k standard / 30k disability / 0 freelance)
+     4. Annual taxable income
+     5. Monthly income tax via bracket engine
+     6. Martyrs' Fund deduction (if toggle is on)
+     7. Net salary = gross − employeeSI − monthlyTax − martyrsDeduct
+     8. Total employer cost = gross + employerSI + martyrsFund + emergencyFund
+   ── */
+/* taxType: 'normal' | 'disabled' | 'freelance'
+   Freelance path: flat 10% tax on gross, no SI, no Martyrs' Fund, no Emergency Fund */
+function computeFromGross(gross, taxType, basis, sub, incMartyrs, custom) {
+  if (taxType === 'freelance') {
+    // Freelance: flat 10% tax; no SI, no Martyrs' Fund, no Emergency Fund applies to employer
+    const monthlyTax = gross * RULES.freelanceTaxRate;
+    const net = gross - monthlyTax;
+    // Emergency fund not applicable for freelance — cost = gross only
+    return { gross, insuranceWage:0, employeeSI:0, employerSI:0,
+      annualTaxable: gross*12, monthlyTax, martyrsFund:0, martyrsDeduct:0,
+      emergencyFund:0, net, cost:gross, taxLabel:'Freelance Tax (10% Flat)' };
+  }
+  const insuranceWage = getInsuranceWage(gross, basis, custom);
+  const si = getSIShares(insuranceWage, sub);
+  const exemption = taxType === 'disabled' ? RULES.exemptionAnnual.disabled : RULES.exemptionAnnual.normal;
+  const annualTaxable = Math.max(0, (gross - si.employee - exemption/12) * 12);
+  const monthlyTax = calcAnnualTax(annualTaxable) / 12;
+  const martyrsFund   = gross * RULES.martyrsFundRate;
+  const martyrsDeduct = incMartyrs ? martyrsFund : 0;
+  const net = gross - si.employee - monthlyTax - martyrsDeduct;
+  const emergencyFund = Math.min(gross, RULES.emergencyFundWageCap) * RULES.emergencyFundRate;
+  const cost = gross + si.employer + martyrsFund + emergencyFund;
+  return { gross, insuranceWage, employeeSI:si.employee, employerSI:si.employer,
+    annualTaxable, monthlyTax, martyrsFund, martyrsDeduct,
+    emergencyFund, net, cost, taxLabel:null };
+}
+
+function computeFromNet(target, taxType, basis, sub, incMartyrs, custom) {
+  let lo=0, hi=(target*3)+200000;
+  for(let i=0;i<100;i++){
+    const mid=(lo+hi)/2;
+    computeFromGross(mid,taxType,basis,sub,incMartyrs,custom).net < target ? lo=mid : hi=mid;
+  }
+  return computeFromGross((lo+hi)/2,taxType,basis,sub,incMartyrs,custom);
+}
+
+/* ================================================================================
+   SECTION E — FORMATTING UTILITIES
+   Pure display helpers — no effect on calculations.
+     fEGP(v)        → "EGP 16,700.00"  (prefix + comma thousands + 2 decimals)
+     fPct(rate)     → 0.11 → 11         (decimal to percentage number)
+     pct(v, total)  → "77.4%"           (share as percentage string)
+   ================================================================================ */
+// All currency values: "EGP 16,700.00" format (currency prefix, comma separator, 2 decimals)
+const numFmt = new Intl.NumberFormat('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fEGP = v => 'EGP ' + numFmt.format(v);
+const fPct = r => r * 100;
+const pct = (v, total) => total > 0 ? ((v/total)*100).toFixed(1)+'%' : '0.0%';
+
+/* ================================================================================
+   SECTION F — TRANSLATIONS (i18n)
+   All user-visible text in English (en) and Arabic (ar).
+   applyTranslations() reads currentLang and updates every element with
+   a data-i18n attribute. To add a language: add a matching key object below.
+   ================================================================================ */
+const I18N = {
+  en:{
+    appTitle:"Egypt Salary Calculator",
+    appSubtitle:"Gross ⇄ Net · Full tax & social insurance breakdown · Egyptian payroll regulations",
+    btnSettings:"⚙ Settings",tabSingle:"Single Calculation",tabBulk:"Bulk Calculation (CSV)",
+    tabGrossToNet:"Gross → Net",tabNetToGross:"Net → Gross",
+    sectionSalary:"Salary Information",sectionTax:"Tax Settings",sectionSI:"Social Insurance Settings",
+    salaryLabelGross:"Gross Monthly Salary (EGP)",salaryLabelNet:"Monthly Net Salary (EGP)",
+    salaryHintGross:"Enter the employee's full monthly gross salary before any deductions.",
+    salaryHintNet:"Enter the employee's monthly net (take-home) salary.",
+    taxTypeLabel:"Tax Exemption Category",
+    taxTypeStd:"Standard",
+    taxTypeDisability:"Disability Exemption (5%)",
+    taxTypeFreelance:"Freelance & Consulting Tax (10% Flat, No SI)",
+    taxHintStd:"Standard personal exemption applies — EGP 20,000 per year.",
+    taxHintDisability:"Enhanced exemption for persons with disability — EGP 30,000 per year.",
+    taxHintFreelance:"Flat 10% income tax on gross salary. Social insurance does not apply to this category.",
+    martyrsLabel:"Martyrs' Fund Calculation",
+    martyrsSub:"Include Martyrs' Fund deduction in this calculation",
+    siWageBasisLabel:"Social Insurance Wage Basis",
+    siWageNormal:"Standard (Full Salary, Capped)",
+    siWageAllow30:"Allowance-Adjusted (30% Excl., Capped)",
+    siWageNotInsured:"Not Enrolled in Social Insurance",
+    siWageCustom:"Custom Wage (Manual Entry)",
+    customWageLabel:"Custom Social Insurance Wage (EGP)",
+    customWageHint:"This exact amount is used as the insurance wage and combined with the subscription category above.",
+    siSubLabel:"Social Insurance Subscription Category",
+    siSubNormal:"Normal Subscription",
+    siSubAbove60:"Post Retirement Above 60 Years",
+    siSubEmployer:"Employer Subscription",
+    siSubUnder18:"Workers Under 18 Years",
+    calcBtn:"Calculate Salary",
+    resultsHeader:"Salary Breakdown",
+    rowGross:"Gross Monthly Salary",rowInsurableWage:"Social Insurance Wage Basis Amount",
+    rowEmployeeSI:"Social Insurance — Employee Share",rowAnnualTaxable:"Annual Taxable Income",
+    rowIncomeTax:"Monthly Income Tax",rowMartyrsEmployee:"Martyrs' Fund — Employee Share",
+    rowNet:"Net Monthly Salary",costHeader:"Total Employer Cost",
+    rowEmployerSI:"Social Insurance — Employer Share",rowMartyrsEmployer:"Martyrs' Fund — Employer Share",
+    rowEmergencyFund:"Emergency Fund — Employer Share",rowTotalCost:"Total Monthly Cost to Employer",
+    companyNameLabel:"Company Name (for Payslip PDF)",printBtn:"🖨 Save as PDF / Print",
+    chartTitle:"Net Salary Composition",chartNetLabel:"Take-home",
+    bulkTitle:"Bulk Calculation from CSV",
+    bulkInstructions:"Upload a CSV file with one row per employee. Download the template below to see the required columns and accepted values, including the CustomSIWage field.",
+    bulkDownloadTemplate:"Download CSV Template",bulkUpload:"Upload CSV File",
+    bulkResultsTitle:"Results",bulkDownloadResults:"Download Results CSV",
+    settingsTitle:"Calculator Settings",
+    settingsYearNote:"These settings represent a specific payroll year. Export them as a JSON archive, then import to load a different year's rules.",
+    settingsExemptions:"Personal Tax Exemptions (Annual, EGP)",
+    settingsExemptStd:"Standard",settingsExemptDisability:"Disability",settingsFreelanceTax:"Freelance Flat Tax %",
+    settingsSI:"Social Insurance",settingsSICap:"Insurance Wage Cap (Monthly, EGP)",
+    settingsCategory:"Category",settingsEmployeePct:"Employee %",settingsEmployerPct:"Employer %",
+    settingsSINormal:"Normal Subscription",settingsSIAbove60:"Post Retirement (60+)",
+    settingsSIEmpSub:"Employer Subscription",settingsSIUnder18:"Workers Under 18",
+    settingsFunds:"Other Funds",settingsMartyrsRate:"Martyrs' Fund Rate (%)",
+    settingsEmergencyRate:"Emergency Fund Rate (%)",settingsEmergencyCap:"Emergency Fund Wage Cap (EGP)",
+    settingsBrackets:"Income Tax Brackets (Annual)",
+    settingsBracketsHint:"Tax = (Income − Base) × Rate% + Fixed Add-on, applied for income up to each threshold.",
+    settingsUpTo:"Up To",settingsBase:"Base",settingsRate:"Rate %",settingsAddOn:"Add-on",
+    settingsApply:"Apply Settings",settingsReset:"Reset to 2026 Defaults",
+    settingsExport:"Export Settings (Year Archive)",settingsImport:"Import Settings (Load a Year)",
+    noLimit:"No Limit",
+    payslipMainTitle:"Salary Calculation Breakdown",payslipDate:"Issued On",
+    payslipItem:"Item",payslipAmount:"Amount",payslipPct:"% of Gross",payslipNet:"Net Monthly Salary",
+    payslipFooterNote:"This document was generated by the Egypt HR Salary Calculator — Ahmed Hassan · HR Expert",
+    payslipCostHeader:"Total Employer Cost"
+  },
+  ar:{
+    appTitle:"حاسبة رواتب مصر",
+    appSubtitle:"إجمالي ⇄ صافي · تفاصيل كاملة للضريبة والتأمينات الاجتماعية · اللوائح المصرية للرواتب",
+    btnSettings:"⚙ الإعدادات",tabSingle:"حساب فردي",tabBulk:"حساب جماعي (CSV)",
+    tabGrossToNet:"إجمالي ← صافي",tabNetToGross:"صافي ← إجمالي",
+    sectionSalary:"بيانات الراتب",sectionTax:"إعدادات الضريبة",sectionSI:"إعدادات التأمينات الاجتماعية",
+    salaryLabelGross:"الراتب الإجمالي الشهري (جنيه مصري)",salaryLabelNet:"صافي الراتب الشهري (جنيه مصري)",
+    salaryHintGross:"أدخل الراتب الإجمالي الشهري الكامل للموظف قبل أي استقطاعات.",
+    salaryHintNet:"أدخل صافي الراتب الشهري للموظف.",
+    taxTypeLabel:"فئة الإعفاء الضريبي",
+    taxTypeStd:"أساسي",taxTypeDisability:"إعفاء الإعاقة (5%)",
+    taxTypeFreelance:"ضريبة العمالة الحرة والاستشارات (10% ثابتة، بدون تأمينات)",
+    taxHintStd:"يُطبَّق الإعفاء الشخصي الأساسي — 20,000 جنيه سنويًا.",
+    taxHintDisability:"إعفاء معزز لذوي الإعاقة — 30,000 جنيه سنويًا.",
+    taxHintFreelance:"ضريبة دخل ثابتة 10% على الراتب الإجمالي. لا تُطبَّق التأمينات الاجتماعية على هذه الفئة.",
+    martyrsLabel:"حساب صندوق الشهداء",martyrsSub:"تضمين خصم صندوق الشهداء في هذا الحساب",
+    siWageBasisLabel:"أساس أجر التأمينات الاجتماعية",
+    siWageNormal:"أساسي (الراتب الكامل، يخضع للحد الأقصى)",
+    siWageAllow30:"معدَّل بالبدلات (استبعاد 30%، يخضع للحد الأقصى)",
+    siWageNotInsured:"غير مقيَّد بالتأمينات الاجتماعية",
+    siWageCustom:"أجر تأميني مخصص (إدخال يدوي)",
+    customWageLabel:"الأجر التأميني المخصص (جنيه مصري)",
+    customWageHint:"سيُستخدم هذا المبلغ كأساس للأجر التأميني مع فئة الاشتراك المحددة أعلاه.",
+    siSubLabel:"فئة اشتراك التأمينات الاجتماعية",
+    siSubNormal:"الاشتراك العادي",
+    siSubAbove60:"ما بعد سن المعاش (فوق 60 سنة)",
+    siSubEmployer:"اشتراك صاحب العمل",
+    siSubUnder18:"العمال دون 18 سنة",
+    calcBtn:"احسب الراتب",
+    resultsHeader:"تفاصيل الراتب",
+    rowGross:"الراتب الإجمالي الشهري",rowInsurableWage:"قيمة أساس أجر التأمينات",
+    rowEmployeeSI:"التأمينات الاجتماعية — حصة الموظف",rowAnnualTaxable:"الدخل السنوي الخاضع للضريبة",
+    rowIncomeTax:"ضريبة الدخل الشهرية",rowMartyrsEmployee:"صندوق الشهداء — حصة الموظف",
+    rowNet:"صافي الراتب الشهري",costHeader:"إجمالي تكلفة صاحب العمل",
+    rowEmployerSI:"التأمينات الاجتماعية — حصة صاحب العمل",rowMartyrsEmployer:"صندوق الشهداء — حصة صاحب العمل",
+    rowEmergencyFund:"صندوق الطوارئ — حصة صاحب العمل",rowTotalCost:"إجمالي التكلفة الشهرية على صاحب العمل",
+    companyNameLabel:"اسم الشركة (لقسيمة الراتب PDF)",printBtn:"🖨 حفظ كـ PDF / طباعة",
+    chartTitle:"تكوين صافي الراتب",chartNetLabel:"المستحق",
+    bulkTitle:"حساب جماعي من ملف CSV",
+    bulkInstructions:"ارفع ملف CSV يحتوي على صف لكل موظف. حمّل النموذج أدناه لمعرفة الأعمدة المطلوبة والقيم المقبولة.",
+    bulkDownloadTemplate:"تحميل نموذج CSV",bulkUpload:"رفع ملف CSV",
+    bulkResultsTitle:"النتائج",bulkDownloadResults:"تحميل نتائج CSV",
+    settingsTitle:"إعدادات الحاسبة",
+    settingsYearNote:"تمثل هذه الإعدادات سنة رواتب محددة. صدِّرها لأرشفة القواعد ثم استوردها لتحميل سنة مختلفة.",
+    settingsExemptions:"الإعفاءات الضريبية الشخصية (سنويًا، جنيه)",
+    settingsExemptStd:"أساسي",settingsExemptDisability:"إعاقة",settingsFreelanceTax:"نسبة الضريبة الثابتة للعمالة الحرة %",
+    settingsSI:"التأمينات الاجتماعية",settingsSICap:"الحد الأقصى للأجر التأميني (شهريًا، جنيه)",
+    settingsCategory:"الفئة",settingsEmployeePct:"نسبة الموظف %",settingsEmployerPct:"نسبة صاحب العمل %",
+    settingsSINormal:"الاشتراك العادي",settingsSIAbove60:"ما بعد سن المعاش (60+)",
+    settingsSIEmpSub:"اشتراك صاحب العمل",settingsSIUnder18:"العمال دون 18",
+    settingsFunds:"صناديق أخرى",settingsMartyrsRate:"نسبة صندوق الشهداء (%)",
+    settingsEmergencyRate:"نسبة صندوق الطوارئ (%)",settingsEmergencyCap:"الحد الأقصى لأجر صندوق الطوارئ (جنيه)",
+    settingsBrackets:"شرائح ضريبة الدخل (سنويًا)",
+    settingsBracketsHint:"الضريبة = (الدخل − الأساس) × النسبة% + إضافة ثابتة، للدخل حتى كل حد.",
+    settingsUpTo:"حتى",settingsBase:"الأساس",settingsRate:"النسبة %",settingsAddOn:"إضافة ثابتة",
+    settingsApply:"تطبيق الإعدادات",settingsReset:"إعادة التعيين لافتراضيات 2026",
+    settingsExport:"تصدير الإعدادات (أرشيف السنة)",settingsImport:"استيراد الإعدادات (تحميل سنة)",
+    noLimit:"بلا حد",
+    payslipMainTitle:"تفاصيل حساب الراتب",payslipDate:"تاريخ الإصدار",
+    payslipItem:"البيان",payslipAmount:"المبلغ",payslipPct:"% من الإجمالي",payslipNet:"صافي الراتب الشهري",
+    payslipFooterNote:"تم إنشاء هذه الوثيقة بواسطة حاسبة رواتب مصر — أحمد حسن · خبير موارد بشرية",
+    payslipCostHeader:"إجمالي تكلفة صاحب العمل"
+  }
+};
+let currentLang = 'en';
+
+function applyTranslations() {
+  const d = I18N[currentLang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (d[k] !== undefined) el.textContent = d[k];
+  });
+  document.getElementById('htmlRoot').setAttribute('lang', currentLang);
+  document.getElementById('htmlRoot').setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+  document.getElementById('langToggle').textContent = currentLang === 'en' ? 'العربية' : 'English';
+  setMode(currentMode);
+  updateTaxHint();
+}
+document.getElementById('langToggle').addEventListener('click', () => {
+  currentLang = currentLang === 'en' ? 'ar' : 'en';
+  applyTranslations();
+});
+
+/* ================================================================================
+   SECTION G — UI: FORM CONTROLS
+   Sets up the interactive behaviour of the left-hand input panel:
+     - applyTranslations(): updates all text when the language changes
+     - stampYear(): updates the year badge and result chips
+     - setMode(): switches the form between Gross→Net and Net→Gross
+     - updateTaxHint(): shows/hides the SI section for Freelance
+   ================================================================================ */
+const $  = id => document.getElementById(id);
+const salaryLabel = $('salaryLabel'), salaryHint = $('salaryHint');
+const taxTypeEl = $('taxType'), martyrsToggle = $('martyrsToggle');
+const siWageBasisEl = $('siWageBasis'), siSubEl = $('siSubscription');
+const customWageField = $('customWageField'), customWageInput = $('customWageInput');
+const siSectionTitle = $('siSectionTitle'), siFields = $('siFields');
+const martyrsToggleField = $('martyrsToggleField');
+const calcBtn = $('calcBtn');
+const taxLabel = $('taxLabel');
+
+let currentMode = 'grossToNet', lastResult = null;
+
+function stampYear() {
+  const yr = RULES.year || PAYROLL_YEAR;
+  [$('resultYearBadge'), $('costYearBadge')].forEach(el => { if(el) el.textContent = yr; });
+  const yearNum = $('yearNum');
+  if (yearNum) yearNum.textContent = yr;
+}
+stampYear();
+
+function setMode(mode) {
+  currentMode = mode;
+  const d = I18N[currentLang];
+  if (mode === 'grossToNet') {
+    $('tabGrossToNet').classList.add('active'); $('tabNetToGross').classList.remove('active');
+    salaryLabel.textContent = d.salaryLabelGross; salaryHint.textContent = d.salaryHintGross;
+  } else {
+    $('tabNetToGross').classList.add('active'); $('tabGrossToNet').classList.remove('active');
+    salaryLabel.textContent = d.salaryLabelNet;   salaryHint.textContent = d.salaryHintNet;
+  }
+}
+$('tabGrossToNet').addEventListener('click', () => setMode('grossToNet'));
+$('tabNetToGross').addEventListener('click', () => setMode('netToGross'));
+
+function updateTaxHint() {
+  const d = I18N[currentLang], type = taxTypeEl.value;
+  const hintsMap = { normal:'taxHintStd', disabled:'taxHintDisability', freelance:'taxHintFreelance' };
+  $('taxHint').textContent = d[hintsMap[type]] || '';
+  const showSI = type !== 'freelance';
+  siSectionTitle.style.display = showSI ? '' : 'none';
+  siFields.style.display       = showSI ? '' : 'none';
+  martyrsToggleField.style.display = showSI ? '' : 'none';
+  customWageField.style.display = (showSI && siWageBasisEl.value === 'custom') ? 'block' : 'none';
+}
+taxTypeEl.addEventListener('change', updateTaxHint);
+siWageBasisEl.addEventListener('change', () => {
+  customWageField.style.display = (siWageBasisEl.value === 'custom' && taxTypeEl.value !== 'freelance') ? 'block' : 'none';
+});
+
+/* ================================================================================
+   SECTION H — DONUT CHART
+   ── drawDonut(result)
+   Draws the circular chart by calculating what fraction of the gross salary
+   each component (net, SI, tax, martyrs) takes up, then converting that
+   fraction into an arc length on the SVG circle (circumference = 2πr = 239px).
+   The legend below the chart lists each component with its EGP amount and %.
+   ================================================================================ */
+const C = 2 * Math.PI * 38; // circumference of r=38
+const CHART_COLORS = {
+  net:     '#1E7C52',
+  si:      '#0B2545',
+  tax:     '#B03A2E',
+  martyrs: '#D4A024'
+};
+
+function drawDonut(r) {
+  const isFreelance = taxTypeEl.value === 'freelance';
+  const segments = [
+    { id:'seg-net',     value: r.net,                      color: CHART_COLORS.net,     label: I18N[currentLang].rowNet },
+    { id:'seg-si',      value: isFreelance ? 0 : r.employeeSI, color: CHART_COLORS.si, label: I18N[currentLang].rowEmployeeSI },
+    { id:'seg-tax',     value: r.monthlyTax,               color: CHART_COLORS.tax,     label: r.taxLabel || I18N[currentLang].rowIncomeTax },
+    { id:'seg-martyrs', value: r.martyrsDeduct,            color: CHART_COLORS.martyrs, label: I18N[currentLang].rowMartyrsEmployee }
+  ].filter(s => s.value > 0);
+
+  const total = r.gross;
+  let offset = 0;
+
+  // Reset all segments first
+  ['seg-net','seg-si','seg-tax','seg-martyrs'].forEach(id => {
+    const el = document.getElementById(id);
+    el.setAttribute('stroke-dasharray', '0 ' + C);
+    el.setAttribute('stroke-dashoffset', '0');
+    el.setAttribute('stroke', 'transparent');
+  });
+
+  segments.forEach(s => {
+    const el = document.getElementById(s.id);
+    const dash = (s.value / total) * C;
+    el.setAttribute('stroke', s.color);
+    el.setAttribute('stroke-dasharray', dash + ' ' + (C - dash));
+    el.setAttribute('stroke-dashoffset', -offset);
+    offset += dash;
+  });
+
+  // Net % in center
+  const netPct = total > 0 ? ((r.net / total) * 100).toFixed(1) : '0.0';
+  $('dcNetPct').textContent = netPct + '%';
+
+  // Legend — show label, EGP amount, and percentage
+  const legend = $('chartLegend');
+  legend.innerHTML = '';
+  segments.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'legend-item';
+    div.innerHTML = `<div class="legend-dot" style="background:${s.color}"></div>
+      <div class="legend-text">${s.label}</div>
+      <div class="legend-val">${fEGP(s.value)}</div>
+      <div class="legend-pct">${pct(s.value, total)}</div>`;
+    legend.appendChild(div);
+  });
+}
+
+/* ================================================================================
+   SECTION I — UI: SHOW RESULTS
+   ── showResults(result)
+   Takes the calculation result object from Section D and writes every
+   value into the right-hand results panel. Also controls which rows
+   are visible (e.g., hides SI rows for Freelance employees).
+   ================================================================================ */
+function showResults(r) {
+  const incMartyrs = martyrsToggle.checked;
+  const isFreelance = taxTypeEl.value === 'freelance';
+
+  $('outGross').textContent         = fEGP(r.gross);
+  $('outInsurableWage').textContent = fEGP(r.insuranceWage);
+  $('outSI').textContent            = '(' + fEGP(r.employeeSI) + ')';
+  $('outAnnualTaxable').textContent = fEGP(r.annualTaxable);
+  $('outTax').textContent           = '(' + fEGP(r.monthlyTax) + ')';
+  $('outMartyrsEmployee').textContent = '(' + fEGP(r.martyrsDeduct) + ')';
+  $('outNet').textContent           = fEGP(r.net);
+  $('outGross2').textContent        = fEGP(r.gross);
+  $('outEmployerSI').textContent    = '+ ' + fEGP(r.employerSI);
+  $('outMartyrsEmployer').textContent = '+ ' + fEGP(r.martyrsFund);
+  $('outEmergencyFund').textContent = '+ ' + fEGP(r.emergencyFund);
+  $('outCost').textContent          = fEGP(r.cost);
+
+  taxLabel.textContent = r.taxLabel || I18N[currentLang].rowIncomeTax;
+
+  // Freelance hides SI and martyrs
+  $('rowSIWageWrap').style.display  = isFreelance ? 'none' : '';
+  $('rowSIWrap').style.display      = isFreelance ? 'none' : '';
+  $('rowEmpSIWrap').style.display   = isFreelance ? 'none' : '';
+  $('rowEmergencyWrap').style.display = isFreelance ? 'none' : '';
+  $('martyrsRow').style.display     = (!isFreelance && incMartyrs) ? '' : 'none';
+  $('costMartyrsRow').style.display = isFreelance ? 'none' : '';
+
+  // Show reset bar alongside results
+  $('resetBar').style.display = 'block';
+  $('resetBar').classList.add('visible');
+  // Expand to two-column layout
+  document.querySelector('.split-layout').classList.add('has-results');
+
+  // Show all result panels
+  ['resultsCard','costCard','chartCard','printCard'].forEach(id => {
+    const el = $(id);
+    if (el) { el.classList.add('visible'); el.style.display = 'block'; }
+  });
+
+  drawDonut(r);
+}
+
+/* ================================================================================
+   SECTION J — UI: RUN CALCULATION
+   ── runCalculation()
+   Called when the user clicks "Calculate Salary". Steps:
+     1. Read and validate the salary input
+     2. Read all dropdown values and the Martyrs' Fund toggle
+     3. Call computeFromGross() or computeFromNet() from Section D
+     4. Store the result in lastResult (used by the PDF printer)
+     5. Call showResults() from Section I to populate the right panel
+   ================================================================================ */
+function runCalculation() {
+  const val = parseFloat($('salaryInput').value.replace(/,/g,''));
+  if (isNaN(val) || val < 0) {
+    alert('Please enter a valid, positive salary amount.\nأدخل راتبًا صحيحًا وموجبًا.');
+    return;
+  }
+  const r = currentMode === 'grossToNet'
+    ? computeFromGross(val, taxTypeEl.value, siWageBasisEl.value, siSubEl.value, martyrsToggle.checked, parseFloat(customWageInput.value)||0)
+    : computeFromNet  (val, taxTypeEl.value, siWageBasisEl.value, siSubEl.value, martyrsToggle.checked, parseFloat(customWageInput.value)||0);
+  lastResult = r;
+  showResults(r);
+}
+calcBtn.addEventListener('click', runCalculation);
+
+/* ================================================================================
+   SECTION K — UI: RESET
+   Clears all inputs, resets all dropdowns to their default values,
+   collapses the layout back to the centred single-column view,
+   and hides all result panels.
+   ================================================================================ */
+$('resetBtn').addEventListener('click', () => {
+  // Clear the salary input
+  $('salaryInput').value = '';
+
+  // Reset all dropdowns to defaults
+  $('taxType').value = 'normal';
+  $('siWageBasis').value = 'normal';
+  $('siSubscription').value = 'normal';
+  $('martyrsToggle').checked = true;
+  $('customWageInput').value = '';
+  $('customWageField').style.display = 'none';
+  $('companyName').value = '';
+
+  // Collapse back to centred single column
+  document.querySelector('.split-layout').classList.remove('has-results');
+
+  // Hide all result panels
+  ['resultsCard','costCard','chartCard','printCard','resetBar'].forEach(id => {
+    const el = $(id);
+    if (el) { el.classList.remove('visible'); el.style.display = 'none'; }
+  });
+
+  // Reset state
+  lastResult = null;
+
+  // Refresh UI hints
+  updateTaxHint();
+
+  // Scroll back to top of the form smoothly
+  $('salaryInput').focus();
+  $('salaryInput').scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+
+/* ================================================================================
+   SECTION L — PDF PRINT / PAYSLIP
+   ── printBtn click handler
+   Builds a complete A4-formatted payslip inside the hidden #printArea div,
+   then triggers window.print(). The user can choose to print or save as PDF.
+   The payslip includes:
+     - AH logo + Egypt flag + year badge
+     - Summary strip (company, gross, tax category, net)
+     - Employee breakdown table (with % of gross column)
+     - Employer cost table
+     - Ahmed Hassan branded footer
+   ================================================================================ */
+$('printBtn').addEventListener('click', () => {
+  if (!lastResult) runCalculation();
+  if (!lastResult) return;
+
+  const d = I18N[currentLang];
+  const r = lastResult;
+  const co = $('companyName').value || 'N/A';
+  const yr = RULES.year || PAYROLL_YEAR;
+  const isFreelance = taxTypeEl.value === 'freelance';
+  const incMartyrs  = martyrsToggle.checked;
+  const today = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+
+  // AH monogram SVG (correct logo — used at two sizes)
+  const ahLogo = (size) => `<svg width="${size}" height="${size}" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="pGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F0C430"/><stop offset="100%" stop-color="#B8860B"/></linearGradient>
+      <linearGradient id="pNavy" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#163860"/><stop offset="100%" stop-color="#0B2545"/></linearGradient>
+    </defs>
+    <circle cx="33" cy="33" r="32" fill="url(#pGold)"/>
+    <circle cx="33" cy="33" r="27" fill="url(#pNavy)"/>
+    <line x1="14" y1="47" x2="23" y2="21" stroke="url(#pGold)" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="23" y1="21" x2="32" y2="47" stroke="url(#pGold)" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="16.5" y1="38" x2="29.5" y2="38" stroke="url(#pGold)" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="35" y1="21" x2="35" y2="47" stroke="url(#pGold)" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="46" y1="21" x2="46" y2="47" stroke="url(#pGold)" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="35" y1="33.5" x2="46" y2="33.5" stroke="url(#pGold)" stroke-width="2.6" stroke-linecap="round"/>
+    <rect x="14" y="51" width="38" height="2.5" rx="1.25" fill="url(#pGold)" opacity=".7"/>
+  </svg>`;
+
+  // Egypt flag base64 (embedded)
+  const flagB64 = document.querySelector('.year-badge img') ? document.querySelector('.year-badge img').src : '';
+
+  // Build breakdown rows
+  const empRows = [
+    { label: d.rowGross, value: fEGP(r.gross), pct: '100.0%' },
+    ...(!isFreelance ? [
+      { label: d.rowInsurableWage, value: fEGP(r.insuranceWage), pct: pct(r.insuranceWage, r.gross), dim:true },
+      { label: d.rowEmployeeSI,    value: '('+fEGP(r.employeeSI)+')',  pct: pct(r.employeeSI, r.gross), ded:true }
+    ] : []),
+    { label: d.rowAnnualTaxable+' (monthly)', value: fEGP(r.annualTaxable/12), pct: pct(r.annualTaxable/12, r.gross), dim:true },
+    { label: r.taxLabel || d.rowIncomeTax, value: '('+fEGP(r.monthlyTax)+')', pct: pct(r.monthlyTax, r.gross), ded:true },
+    ...(!isFreelance && incMartyrs ? [
+      { label: d.rowMartyrsEmployee, value: '('+fEGP(r.martyrsDeduct)+')', pct: pct(r.martyrsDeduct, r.gross), ded:true }
+    ] : []),
+    { label: d.rowNet, value: fEGP(r.net), pct: pct(r.net, r.gross), bold:true, net:true }
+  ];
+
+  const costRows = !isFreelance ? [
+    { label: d.rowGross,          value: fEGP(r.gross),             pct: '—' },
+    { label: d.rowEmployerSI,     value: '+ '+fEGP(r.employerSI),   pct: pct(r.employerSI, r.gross) },
+    { label: d.rowMartyrsEmployer,value: '+ '+fEGP(r.martyrsFund),  pct: pct(r.martyrsFund, r.gross) },
+    { label: d.rowEmergencyFund,  value: '+ '+fEGP(r.emergencyFund),pct: pct(r.emergencyFund, r.gross) },
+    { label: d.rowTotalCost,      value: fEGP(r.cost),              pct: pct(r.cost, r.gross), bold:true, total:true }
+  ] : [
+    { label: d.rowGross,     value: fEGP(r.gross), pct: '100.0%' },
+    { label: d.rowTotalCost, value: fEGP(r.cost),  pct: pct(r.cost, r.gross), bold:true, total:true }
+  ];
+
+  const rowHTML = rows => rows.map(row => `
+    <tr style="${row.net?'background:#D4EDDF;':row.total?'background:#E8E0F8;':row.dim?'background:#F7F9FC;':''}">
+      <td style="padding:6px 10px;font-size:11px;border-bottom:1px solid #EDF1F7;${row.bold?'font-weight:700;':''}${row.dim?'color:#999;font-style:italic;':''}${row.ded?'color:#B03A2E;':''}">${row.label}</td>
+      <td style="padding:6px 10px;font-size:11px;text-align:right;font-variant-numeric:tabular-nums;border-bottom:1px solid #EDF1F7;${row.bold?'font-weight:700;':''}${row.ded?'color:#B03A2E;':''}${row.net?'color:#1E7C52;font-size:13px;font-weight:800;':''}${row.total?'color:#5B3DA8;font-size:13px;font-weight:800;':''}">${row.value}</td>
+      <td style="padding:6px 10px;font-size:10px;text-align:right;color:#999;border-bottom:1px solid #EDF1F7;">${row.pct}</td>
+    </tr>`).join('');
+
+  $('printArea').innerHTML = `
+    <style>
+      @page { size: A4; margin: 12mm 14mm; }
+      * { box-sizing: border-box; }
+      body { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; }
+      .ps { max-width:100%; }
+      table { width:100%; border-collapse:collapse; }
+      th { padding:7px 10px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.7px; }
+      .two-col { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:12px; }
+    </style>
+    <div class="ps">
+
+      <!-- ── HEADER ── -->
+      <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #0B2545;padding-bottom:10px;margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          ${ahLogo(46)}
+          <div>
+            <div style="font-size:16px;font-weight:800;color:#0B2545;line-height:1.2;">${d.payslipMainTitle}</div>
+            <div style="font-size:10px;color:#5E7185;margin-top:3px;display:flex;align-items:center;gap:5px;">
+              ${flagB64 ? `<img src="${flagB64}" style="width:14px;height:14px;border-radius:50%;object-fit:cover;">` : '🇪🇬'}
+              Egypt Salary Calculator &nbsp;·&nbsp; ${yr} Payroll Rules
+            </div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:10px;color:#888;">${d.payslipDate}</div>
+          <div style="font-size:12px;font-weight:700;color:#0B2545;">${today}</div>
+          <div style="margin-top:5px;background:#D4A024;color:#fff;font-size:8px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:2px 9px;border-radius:999px;display:inline-block;">${yr} Rules</div>
+        </div>
+      </div>
+
+      <!-- ── SUMMARY STRIP ── -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;padding:10px 12px;background:#F0F4F9;border-radius:7px;">
+        <div><div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px;">Company</div><div style="font-size:12px;font-weight:700;color:#0B2545;">${co}</div></div>
+        <div><div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px;">Gross Salary</div><div style="font-size:12px;font-weight:700;color:#0B2545;">${fEGP(r.gross)}</div></div>
+        <div><div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px;">Tax Category</div><div style="font-size:11px;font-weight:700;color:#0B2545;">${taxTypeEl.options[taxTypeEl.selectedIndex].text}</div></div>
+        <div><div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px;">Net Salary</div><div style="font-size:14px;font-weight:900;color:#1E7C52;">${fEGP(r.net)}</div></div>
+      </div>
+
+      <!-- ── TWO TABLES SIDE BY SIDE ── -->
+      <div class="two-col">
+
+        <!-- Employee breakdown -->
+        <div>
+          <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#0B2545;margin-bottom:6px;padding-bottom:4px;border-bottom:2px solid #D8E2EE;">${d.resultsHeader}</div>
+          <table>
+            <thead><tr style="background:#0B2545;">
+              <th style="color:#fff;border-radius:4px 0 0 0;">${d.payslipItem}</th>
+              <th style="color:#fff;text-align:right;">${d.payslipAmount}</th>
+              <th style="color:#fff;text-align:right;border-radius:0 4px 0 0;">%</th>
+            </tr></thead>
+            <tbody>${rowHTML(empRows)}</tbody>
+          </table>
+        </div>
+
+        <!-- Employer cost -->
+        <div>
+          <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#5B3DA8;margin-bottom:6px;padding-bottom:4px;border-bottom:2px solid #E0D5F6;">${d.payslipCostHeader}</div>
+          <table>
+            <thead><tr style="background:#5B3DA8;">
+              <th style="color:#fff;border-radius:4px 0 0 0;">${d.payslipItem}</th>
+              <th style="color:#fff;text-align:right;">${d.payslipAmount}</th>
+              <th style="color:#fff;text-align:right;border-radius:0 4px 0 0;">%</th>
+            </tr></thead>
+            <tbody>${rowHTML(costRows)}</tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── FOOTER ── -->
+      <div style="margin-top:14px;padding-top:10px;border-top:1px solid #D8E2EE;display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:9px;color:#aaa;">${d.payslipFooterNote}</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          ${ahLogo(24)}
+          <div><div style="font-weight:800;font-size:11px;color:#0B2545;">Ahmed Hassan</div><div style="font-size:9px;color:#888;">HR Expert</div></div>
+        </div>
+      </div>
+
+    </div>`;
+
+  window.print();
+});
+
+/* ================================================================================
+   SECTION M — NAVIGATION
+   Wires up the Settings panel toggle (⚙ button) and the main navigation
+   tab (currently only "Single Calculation" — future modules will add more tabs).
+   ================================================================================ */
+
+
+$('settingsToggle').addEventListener('click', () => {
+  const p = $('settingsPanel');
+  p.style.display = p.style.display === 'block' ? 'none' : 'block';
+});
+
+/* ================================================================================
+   SECTION N — SETTINGS PANEL
+   Four functions manage the editable payroll rules panel:
+     buildBracketTable() — creates the editable tax bracket table rows
+     loadSettingsForm()  — reads RULES object → fills all input fields
+     readSettingsForm()  — reads all input fields → updates RULES object
+   Plus event listeners for: Apply, Reset, Export (JSON), Import (JSON).
+   ================================================================================ */
+/* ── buildBracketTable()
+   Dynamically creates the rows of the income-tax bracket table in the
+   Settings panel. Each row has four number inputs (upTo, base, rate, addOn).
+   Called by loadSettingsForm() whenever the panel is first shown or reset.
+   ── */
+function buildBracketTable() {
+  const tbody = document.querySelector('#bracketTable tbody');
+  tbody.innerHTML = '';
+  RULES.taxBrackets.forEach((b, i) => {
+    const tr = document.createElement('tr');
+    ['upTo','base','rate','addOn'].forEach(f => {
+      const td = document.createElement('td');
+      if (f === 'upTo' && b.upTo === null) {
+        td.className = 'nolimit'; td.textContent = I18N[currentLang].noLimit;
+      } else {
+        const inp = document.createElement('input');
+        inp.type='number'; inp.step = f==='rate' ? '0.001' : '1';
+        inp.value = f==='rate' ? fPct(b[f]) : b[f];
+        inp.dataset.row=i; inp.dataset.field=f;
+        td.appendChild(inp);
+      }
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+}
+function loadSettingsForm() {
+  $('setExemptNormal').value    = RULES.exemptionAnnual.normal;
+  $('setExemptDisabled').value  = RULES.exemptionAnnual.disabled;
+  $('setFreelanceTaxRate').value = fPct(RULES.freelanceTaxRate);
+  $('setSICap').value           = RULES.siWageCap;
+  $('setSINormalEmp').value     = fPct(RULES.siRates.normal.employee);
+  $('setSINormalEmr').value     = fPct(RULES.siRates.normal.employer);
+  $('setSIAbove60Emp').value    = fPct(RULES.siRates.above60.employee);
+  $('setSIAbove60Emr').value    = fPct(RULES.siRates.above60.employer);
+  $('setSIEmpSubEmp').value     = fPct(RULES.siRates.employer_subscription.employee);
+  $('setSIEmpSubEmr').value     = fPct(RULES.siRates.employer_subscription.employer);
+  $('setSIUnder18Emp').value    = fPct(RULES.siRates.under18.employee);
+  $('setSIUnder18Emr').value    = fPct(RULES.siRates.under18.employer);
+  $('setMartyrsRate').value     = fPct(RULES.martyrsFundRate);
+  $('setEmergencyRate').value   = fPct(RULES.emergencyFundRate);
+  $('setEmergencyCap').value    = RULES.emergencyFundWageCap;
+  buildBracketTable();
+}
+function readSettingsForm() {
+  RULES.exemptionAnnual.normal   = +$('setExemptNormal').value  || 0;
+  RULES.exemptionAnnual.disabled = +$('setExemptDisabled').value || 0;
+  RULES.freelanceTaxRate         = (+$('setFreelanceTaxRate').value || 0)/100;
+  RULES.siWageCap                = +$('setSICap').value          || 0;
+  RULES.siRates.normal.employee                = (+$('setSINormalEmp').value  || 0)/100;
+  RULES.siRates.normal.employer                = (+$('setSINormalEmr').value  || 0)/100;
+  RULES.siRates.above60.employee               = (+$('setSIAbove60Emp').value || 0)/100;
+  RULES.siRates.above60.employer               = (+$('setSIAbove60Emr').value || 0)/100;
+  RULES.siRates.employer_subscription.employee = (+$('setSIEmpSubEmp').value  || 0)/100;
+  RULES.siRates.employer_subscription.employer = (+$('setSIEmpSubEmr').value  || 0)/100;
+  RULES.siRates.under18.employee               = (+$('setSIUnder18Emp').value || 0)/100;
+  RULES.siRates.under18.employer               = (+$('setSIUnder18Emr').value || 0)/100;
+  RULES.martyrsFundRate    = (+$('setMartyrsRate').value    || 0)/100;
+  RULES.emergencyFundRate  = (+$('setEmergencyRate').value  || 0)/100;
+  RULES.emergencyFundWageCap = +$('setEmergencyCap').value  || 0;
+  document.querySelectorAll('#bracketTable input').forEach(inp => {
+    const i=+inp.dataset.row, f=inp.dataset.field;
+    let v = parseFloat(inp.value) || 0;
+    if (f==='rate') v /= 100;
+    RULES.taxBrackets[i][f] = v;
+  });
+}
+$('applySettingsBtn').addEventListener('click', () => {
+  readSettingsForm(); stampYear();
+  if (lastResult) runCalculation();
+  alert(currentLang==='ar' ? 'تم تطبيق الإعدادات' : 'Settings applied.');
+});
+$('resetSettingsBtn').addEventListener('click', () => { RULES=getDefaultRules(); loadSettingsForm(); stampYear(); if(lastResult) runCalculation(); });
+$('exportSettingsBtn').addEventListener('click', () => {
+  readSettingsForm();
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(RULES,null,2)],{type:'application/json'}));
+  a.download=`egypt_payroll_rules_${RULES.year||PAYROLL_YEAR}.json`; a.click();
+});
+$('importSettingsInput').addEventListener('change', e => {
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{try{RULES=JSON.parse(ev.target.result);loadSettingsForm();stampYear();if(lastResult)runCalculation();}catch{alert('Invalid settings file.');}};
+  r.readAsText(f);
+});
+
+/* ================================================================================
+   SECTION O — SALARY INPUT FORMATTER
+   The salary field is a text input (not a number input) so we can control
+   exactly how it looks. This section adds live comma-separator formatting:
+     "15000" typed → instantly becomes "15,000"
+   The keydown handler prevents letters or symbols from being entered at all.
+   When runCalculation() reads the value, it strips commas before parsing.
+   ================================================================================ */
+const salaryInputEl = $('salaryInput');
+
+function applySeparator(inputEl) {
+  const raw = inputEl.value.replace(/,/g, '');          // strip existing commas
+  if (raw === '' || raw === '.') return;                 // nothing to format yet
+  const [intPart, decPart] = raw.split('.');
+  const formatted = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                   + (decPart !== undefined ? '.' + decPart : '');
+  if (inputEl.value !== formatted) {
+    const pos = inputEl.selectionStart;
+    const diff = formatted.length - inputEl.value.length;
+    inputEl.value = formatted;
+    // Keep cursor in the right place after inserting commas
+    try { inputEl.setSelectionRange(pos + diff, pos + diff); } catch(e) {}
+  }
+}
+
+salaryInputEl.addEventListener('input', function() {
+  applySeparator(this);
+});
+
+salaryInputEl.addEventListener('keydown', function(e) {
+  // Allow control keys: backspace, delete, arrows, tab, home, end, Ctrl/Cmd combos
+  if (e.ctrlKey || e.metaKey) return;
+  if ([8, 9, 35, 36, 37, 38, 39, 40, 46].includes(e.keyCode)) return;
+  // Allow digits and a single decimal point
+  if (/^\d$/.test(e.key)) return;
+  if (e.key === '.' && !this.value.includes('.')) return;
+  e.preventDefault();
+});
+
+/* ================================================================================
+   SECTION P — THEME MANAGEMENT (DARK / LIGHT MODE)
+   How this works (plain language):
+   - The HTML element has a data-theme attribute. When it equals "dark",
+     the dark CSS variables in the stylesheet take effect automatically.
+   - We save the user's choice in localStorage so the browser remembers
+     it the next time they open the page.
+   - The toggle button icon switches between 🌙 (Dark) and ☀️ (Light)
+     to reflect the current mode.
+   - No calculations, formulas, or business logic are affected at all —
+     this is purely a visual / colour change.
+   ===================================================================== */
+const html        = document.getElementById('htmlRoot');
+const themeBtn    = $('themeToggle');
+
+// Read saved preference from localStorage (returns null if first visit)
+const savedTheme  = localStorage.getItem('ahCalcTheme');
+
+// Apply the saved theme on load, or default to 'light'
+function applyTheme(theme) {
+  if (theme === 'dark') {
+    html.setAttribute('data-theme', 'dark');
+    themeBtn.innerHTML = '<span class="theme-icon">☀️</span> Light';
+  } else {
+    html.removeAttribute('data-theme');
+    themeBtn.innerHTML = '<span class="theme-icon">🌙</span> Dark';
+  }
+  // Save the choice so it persists across page reloads
+  localStorage.setItem('ahCalcTheme', theme);
+}
+
+// Apply saved preference immediately on page load
+applyTheme(savedTheme === 'dark' ? 'dark' : 'light');
+
+// Toggle between dark and light when the button is clicked
+themeBtn.addEventListener('click', () => {
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  applyTheme(isDark ? 'light' : 'dark');
+});
+
+/* ================================================================================
+   SECTION Q — INITIALISATION
+   Runs once when the page first loads. Order matters:
+     1. loadSettingsForm() — fills the Settings panel with 2026 default values
+     2. applyTranslations() — sets all text to the user's chosen language
+     3. footerYear — writes the current year into the footer copyright line
+   ================================================================================ */
+loadSettingsForm();
+applyTranslations();
+$('footerYear').textContent = new Date().getFullYear();
+</script>
+
+
+</body><!-- ================================================================================
+   CHANGE LOG
+   ─────────────────────────────────────────────────────────────────────────────────
+   v7.7  Original Calculator
+         Core payroll engine (Gross→Net, Net→Gross binary search),
+         progressive income tax brackets with bracket-cliff rule,
+         social insurance (4 categories, 3 wage-basis options, custom wage),
+         Martyrs' Fund toggle, Emergency Fund, bilingual EN/AR with RTL,
+         donut chart, PDF payslip, Settings panel with JSON export/import,
+         Egypt flag badge, year-stamped exports.
+
+   v7.8  Dark Mode
+         CSS variable overrides via [data-theme="dark"], 🌙/☀️ toggle button
+         in hero header, localStorage persistence, smooth colour transitions.
+
+   v7.9  Mobile Responsiveness
+         Mobile-first approach with 5 breakpoints (base / 480px / 640px /
+         780px / 960px). Touch targets ≥ 44px, single-column-to-split layout,
+         donut chart stacking, horizontal-scroll tables, sticky panel on desktop.
+
+   v8.0  Code Structure & Maintainability
+         Project info block, changelog, HTML/CSS/JS section comments,
+         typography design tokens, future module placeholders, JS doc strings,
+         full legal footer, deduplicated CSS section header style.
+   ─────────────────────────────────────────────────────────────────────────────────
+   FUTURE ROADMAP (planned)
+   v8.1  Gross-Up Calculator
+   v8.2  Social Insurance Standalone Calculator
+   v8.3  End-of-Service Calculator
+   v8.4  Leave Encashment Calculator
+   v8.5  Overtime Calculator
+   ================================================================================ --></html>
