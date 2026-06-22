@@ -966,8 +966,10 @@ button.calculate { padding: 15px; font-size: .96rem; min-height: 50px; }
             </div>
             <div class="field" id="customWageField" style="display:none;">
               <label data-i18n="customWageLabel" for="customWageInput">Custom Social Insurance Wage (EGP)</label>
-              <input type="number" id="customWageInput" min="0" step="1" placeholder="e.g. 12,000">
-              <div class="hint" data-i18n="customWageHint">This exact amount is used as the insurance wage and combined with the subscription category above.</div>
+              <input type="text" id="customWageInput" inputmode="decimal" autocomplete="off"
+                style="font-variant-numeric:tabular-nums;letter-spacing:.3px;"
+                placeholder="E.g. 12,000">
+              <div class="hint" id="customWageHint" data-i18n="customWageHint">Enter a value between EGP 2,700 (minimum) and EGP 16,700 (maximum). Values outside this range will be automatically adjusted.</div>
             </div>
           </div>
 
@@ -1261,6 +1263,7 @@ function getDefaultRules() {
     exemptionAnnual: { normal: 20000, disabled: 30000 },
     freelanceTaxRate: 0.10,
     siWageCap: 16700,
+    siWageMin: 2700,
     martyrsFundRate: 0.0005,
     emergencyFundRate: 0.01,
     emergencyFundWageCap: 2720,
@@ -1296,13 +1299,17 @@ let RULES = getDefaultRules();
    Applies the correct wage rule based on the dropdown selection:
      'normal'       → gross salary, capped at siWageCap (EGP 16,700 in 2026)
      'allowances30' → gross / 1.3 (30% allowance excluded from insurable base)
-     'custom'       → manually entered wage, no cap applied
+     'custom'       → manually entered wage, clamped between SI min (2,700) and max (16,700)
      'not_insured'  → returns 0 (no social insurance contributions)
    ── */
 function getInsuranceWage(gross, basis, custom) {
   if (basis === 'normal')       return Math.min(gross, RULES.siWageCap);
   if (basis === 'allowances30') return Math.min(gross / 1.3, RULES.siWageCap);
-  if (basis === 'custom')       return Math.max(0, custom || 0);
+  if (basis === 'custom') {
+    // Business rule: custom wage must be between SI minimum and maximum
+    const raw = Math.max(0, custom || 0);
+    return Math.min(Math.max(raw, RULES.siWageMin), RULES.siWageCap);
+  }
   return 0;
 }
 /* ── getSIShares(insuranceWage, subscriptionType)
@@ -1427,7 +1434,9 @@ const I18N = {
     siWageNotInsured:"Not Enrolled in Social Insurance",
     siWageCustom:"Custom Wage (Manual Entry)",
     customWageLabel:"Custom Social Insurance Wage (EGP)",
-    customWageHint:"This exact amount is used as the insurance wage and combined with the subscription category above.",
+    customWageHint:"Enter a value between EGP 2,700 (minimum) and EGP 16,700 (maximum). Values outside this range will be automatically adjusted.",
+    siWageMinApplied:"Minimum social insurance wage of EGP 2,700 has been applied.",
+    siWageMaxApplied:"Maximum social insurance wage of EGP 16,700 has been applied.",
     siSubLabel:"Social Insurance Subscription Category",
     siSubNormal:"Normal Subscription",
     siSubAbove60:"Post Retirement Above 60 Years",
@@ -1490,7 +1499,9 @@ const I18N = {
     siWageNotInsured:"غير مقيَّد بالتأمينات الاجتماعية",
     siWageCustom:"أجر تأميني مخصص (إدخال يدوي)",
     customWageLabel:"الأجر التأميني المخصص (جنيه مصري)",
-    customWageHint:"سيُستخدم هذا المبلغ كأساس للأجر التأميني مع فئة الاشتراك المحددة أعلاه.",
+    customWageHint:"أدخل قيمة بين 2,700 جنيه (الحد الأدنى) و 16,700 جنيه (الحد الأقصى). سيتم تعديل القيم خارج هذا النطاق تلقائيًا.",
+    siWageMinApplied:"تم تطبيق الحد الأدنى لأجر التأمينات الاجتماعية البالغ 2,700 جنيه مصري.",
+    siWageMaxApplied:"تم تطبيق الحد الأقصى لأجر التأمينات الاجتماعية البالغ 16,700 جنيه مصري.",
     siSubLabel:"فئة اشتراك التأمينات الاجتماعية",
     siSubNormal:"الاشتراك العادي",
     siSubAbove60:"ما بعد سن المعاش (فوق 60 سنة)",
@@ -1607,6 +1618,107 @@ taxTypeEl.addEventListener('change', updateTaxHint);
 siWageBasisEl.addEventListener('change', () => {
   customWageField.style.display = (siWageBasisEl.value === 'custom' && taxTypeEl.value !== 'freelance') ? 'block' : 'none';
 });
+
+/* ── Custom Social Insurance Wage — formatting + validation
+   Mirrors the salary input exactly:
+     input   → live comma separator while typing (applySeparator)
+     keydown → blocks letters and symbols; allows only digits and one decimal point
+     focus   → strips formatting so the user sees a plain number for easy editing
+     blur    → clamps to [2,700 – 16,700], formats to 2 decimal places,
+               shows a friendly notice if a clamp was applied
+   The calculation engine (getInsuranceWage) also enforces the limits as a
+   safety net, so results are always correct even if validation is bypassed.
+   ── */
+customWageInput.addEventListener('input', function() {
+  applySeparator(this);  // reuses the same live-comma formatter as the salary field
+});
+
+customWageInput.addEventListener('keydown', function(e) {
+  // Allow: backspace, delete, arrows, tab, home, end, Ctrl/Cmd combos
+  if (e.ctrlKey || e.metaKey) return;
+  if ([8, 9, 35, 36, 37, 38, 39, 40, 46].includes(e.keyCode)) return;
+  // Allow: digits and a single decimal point
+  if (/^\d$/.test(e.key)) return;
+  if (e.key === '.' && !this.value.includes('.')) return;
+  e.preventDefault();
+});
+
+customWageInput.addEventListener('focus', function() {
+  // Strip commas on focus so the user edits a clean plain number
+  var raw = parseFloat(this.value.replace(/,/g, ''));
+  if (!isNaN(raw)) this.value = String(raw);
+});
+
+customWageInput.addEventListener('blur', function() {
+  const raw = parseFloat(this.value.replace(/,/g, ''));
+  if (isNaN(raw) || this.value.trim() === '') return; // empty → skip
+
+  const MIN_SI = RULES.siWageMin || 2700;
+  const MAX_SI = RULES.siWageCap  || 16700;
+  const d      = I18N[currentLang];
+  const hint   = $('customWageHint');
+
+  if (raw < MIN_SI) {
+    // Clamp to minimum and format
+    this.value = numFmt.format(MIN_SI);
+    showSIWageNotice(
+      d.siWageMinApplied || 'Minimum social insurance wage of EGP 2,700 has been applied.',
+      'min'
+    );
+    if (hint) hint.style.color = 'var(--bad)';
+    setTimeout(() => { if (hint) hint.style.color = ''; }, 4000);
+  } else if (raw > MAX_SI) {
+    // Clamp to maximum and format
+    this.value = numFmt.format(MAX_SI);
+    showSIWageNotice(
+      d.siWageMaxApplied || 'Maximum social insurance wage of EGP 16,700 has been applied.',
+      'max'
+    );
+    if (hint) hint.style.color = 'var(--bad)';
+    setTimeout(() => { if (hint) hint.style.color = ''; }, 4000);
+  } else {
+    // Valid value — format to exactly 2 decimal places
+    this.value = numFmt.format(raw);
+    if (hint) hint.style.color = '';
+  }
+});
+
+/* ── showSIWageNotice(message, type)
+   Displays a small, non-blocking notice below the custom wage field.
+   It auto-removes after 4 seconds. type = 'min' | 'max'.
+   ── */
+function showSIWageNotice(message, type) {
+  // Remove any existing notice first
+  var existing = document.getElementById('siWageNotice');
+  if (existing) existing.remove();
+
+  var notice = document.createElement('div');
+  notice.id = 'siWageNotice';
+  notice.textContent = (type === 'min' ? '⬆ ' : '⬇ ') + message;
+  notice.style.cssText = [
+    'margin-top:6px',
+    'padding:8px 12px',
+    'background:' + (type === 'min' ? '#FFF3CD' : '#FFF3CD'),
+    'border:1.5px solid #D4A024',
+    'border-radius:7px',
+    'font-size:.76rem',
+    'font-weight:600',
+    'color:#6B4A00',
+    'transition:opacity .5s ease'
+  ].join(';');
+
+  // Insert after the custom wage field
+  var field = $('customWageField');
+  if (field) field.appendChild(notice);
+
+  // Fade out and remove after 4 seconds
+  setTimeout(function() {
+    if (notice && notice.parentNode) {
+      notice.style.opacity = '0';
+      setTimeout(function() { if (notice.parentNode) notice.remove(); }, 600);
+    }
+  }, 3400);
+}
 
 /* ================================================================================
    SECTION H — DONUT CHART
@@ -1737,8 +1849,8 @@ function runCalculation() {
     return;
   }
   const r = currentMode === 'grossToNet'
-    ? computeFromGross(val, taxTypeEl.value, siWageBasisEl.value, siSubEl.value, martyrsToggle.checked, parseFloat(customWageInput.value)||0)
-    : computeFromNet  (val, taxTypeEl.value, siWageBasisEl.value, siSubEl.value, martyrsToggle.checked, parseFloat(customWageInput.value)||0);
+    ? computeFromGross(val, taxTypeEl.value, siWageBasisEl.value, siSubEl.value, martyrsToggle.checked, parseFloat(customWageInput.value.replace(/,/g,''))||0)
+    : computeFromNet  (val, taxTypeEl.value, siWageBasisEl.value, siSubEl.value, martyrsToggle.checked, parseFloat(customWageInput.value.replace(/,/g,''))||0);
   lastResult = r;
   showResults(r);
 }
