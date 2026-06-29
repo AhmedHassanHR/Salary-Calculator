@@ -196,16 +196,23 @@
 
 <!-- Google Search Console verification is set on line 131 above, immediately after the viewport tag. -->
 
-<!-- ── Google Analytics 4 (GA4) — Placeholder ───────────────── -->
+<!-- ── Google Analytics 4 (GA4) ──────────────────────────────── -->
 <!--
-  When ready, replace this comment with your GA4 snippet.
-  Steps: analytics.google.com → Admin → Data Streams → Web → copy tag
-  Snippet looks like:
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
-    gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script>
+  Measurement ID : G-K0CKZ396WQ
+  Implementation : Official gtag.js — Google best practice
+  Placement      : <head>, before </head>, after meta tags
+  Compatibility  : GitHub Pages, Netlify, any static host
+  Privacy note   : Standard GA4 data collection applies.
+                   No personally identifiable information is sent.
 -->
-<!-- Google Analytics Tracking Code Placeholder — insert GA4 snippet here -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-K0CKZ396WQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-K0CKZ396WQ');
+</script>
+<!-- ── End Google Analytics 4 ────────────────────────────────── -->
 
 <!-- ── JSON-LD Structured Data ───────────────────────────────── -->
 <!--
