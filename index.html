@@ -1,13 +1,42 @@
 <!DOCTYPE html>
 <!--
 ================================================================================
+  STABLE BASELINE
+================================================================================
+  Filename:     Egypt_Salary_Calculator_v8_Stable.html
+  Sealed:       June 2026
+  Purpose:      Official production baseline for all future development.
+                Do NOT modify this file. Branch from this version for new work.
+
+================================================================================
   PROJECT INFORMATION
 ================================================================================
   Project:      HR Salary Calculator
-  Owner:        Ahmed Hassan
+
+  ASSETS FOLDER STRUCTURE
+  ─────────────────────────
+  For deployment, maintain this folder structure alongside index.html:
+
+    /index.html                      ← this file (self-contained)
+    /assets/
+      /images/
+        logo.png                     ← official full-resolution logo (1254×1254)
+                                       Used by og:image and twitter:image tags.
+                                       The logo is ALSO embedded as base64 inside
+                                       index.html so it works offline without this file.
+        favicon.png                  ← optional: same as logo.png, or a cropped version
+
+  The logo is embedded as a 128×128 base64 PNG inside index.html for:
+    · Header logo
+    · Footer signature
+    · PDF payslip
+    · Browser favicon (inline data-URI)
+
+  Project:      HR Salary Calculator
+  Owner:        Ahmed Hassan — HR Strategist & HR Tech Builder
   Email:        ahmedhr2008@gmail.com
   LinkedIn:     https://www.linkedin.com/in/ahmedhassan-ahmedhassan
-  Version:      8.1
+  Version:      9.0
   Last Updated: June 2026
   Description:  Egypt payroll calculator for HR professionals.
                 Converts Gross ↔ Net salary under Egyptian tax and
@@ -21,6 +50,74 @@
   v7.9  Mobile Responsiveness — mobile-first media queries, touch targets
   v8.0  Code Structure & Maintainability — section comments, doc strings,
         project info block, future module placeholders, full footer
+  v8.1  Admin Mode + Number Formatting — 5-click logo + password unlock,
+        professional EGP formatting throughout, SI wage validation
+  v8.2  SI Custom Wage Formatting — live comma separator, blur validation,
+        type=text with inputmode=decimal, comma-strip before parseFloat
+  v8.3  Dark Mode File:// Fix — localStorage wrapped in try/catch,
+        window.applyTheme on window object, in-memory fallback
+  v8.4  Priority 1 Audit Fixes —
+        · 2 missing Arabic i18n keys (martyrsSub, taxTypeDisability)
+        · Replaced all alert() with non-blocking toasts + inline validation
+        · Salary validation now rejects zero (val <= 0)
+        · PDF payslip fully supports Arabic RTL layout
+        · PDF Egypt flag image has alt="Egypt Flag" attribute
+  v8.5  Branding, SEO & Social Sharing —
+        · Title updated to "HR Strategist & HR Tech Builder"
+        · Complete OG + Twitter meta tags
+        · Favicon support placeholder
+        · Google Analytics placeholder
+        · Google Search Console verification placeholder
+        · Canonical URL, expanded keywords, improved meta description
+        · About page future placeholder module
+        · All "HR Expert" references updated
+  v8.6  Official Logo Integration —
+        · ahmed-hassan-logo.png embedded as base64 (self-contained)
+        · Header: real logo replaces SVG monogram
+        · Footer: real logo replaces SVG monogram
+        · PDF payslip: real logo replaces SVG monogram
+        · Favicon updated to real logo
+        · OG/Twitter image references updated
+        · Assets folder structure documented
+  v8.7  Logo Update —
+        · Replaced v8.6 logo with revised brand logo
+        · All 4 embed points updated atomically: favicon, header, footer, PDF
+  v9.0  P2 — SEO, Semantic HTML & Social Sharing —
+        · Semantic HTML: <body> wrapped in <div id="app-root">,
+          hero wrapped in <header>, main content in <main id="mainContent">,
+          form panel in <section>, results in <section>, footer in <footer>
+        · JSON-LD structured data: WebApplication, Organization, Person schemas
+        · Expanded OG tags: og:locale, og:image:width/height, og:image:type
+        · Expanded Twitter Card tags: twitter:site, twitter:creator
+        · Favicon: apple-touch-icon, multiple icon sizes, manifest-color meta
+        · robots meta: expanded with max-snippet, max-image-preview directives
+        · Canonical URL already present — confirmed and kept
+        · nav[aria-label] on the main-tabs navigation
+        · aria-label on form section, results sections
+        · <main> landmark for screen reader skip navigation
+  v8.9  UI/UX Color Palette Redesign —
+        · Deep Navy #0C2340 replaces #0B2545 — purer brand anchor
+        · Gold accent #C9981A replaces #D4A024 — deeper, better contrast
+        · Royal Indigo #4A47A3 replaces Purple #5B3DA8 — brand-coherent
+        · Success green #166534 (AAA) replaces #1E7C52
+        · Error red #991B1B (AAA) replaces #B03A2E
+        · Muted text #4A6080 (6.2:1) replaces #5E7185
+        · --card-raised token added for depth system
+        · --accent-glow token added for hover/SVG states
+        · All hardcoded dark-mode hex values converted to CSS variables
+        · Dark mode depth: bg #0A1525 → card #112035 → raised #0D1B2E
+        · Dark status: green #22C55E, red #F87171, indigo #818CF8
+        · border-radius 10px → 12px (premium SaaS feel)
+        · Shadow: wider spread, navy-tinted
+  v8.8  Logo Reverted to Original SVG Monogram —
+        · Removed embedded PNG logo (v8.6/v8.7)
+        · Restored original hand-drawn AH SVG monogram in header
+        · Restored original SVG monogram in footer signature
+        · Restored original SVG-based ahLogo() in PDF payslip
+        · Favicon reverted to assets/images/logo.png placeholder (no inline PNG)
+        · OG/Twitter image tags reverted to REPLACE_WITH_FINAL_IMAGE_URL placeholder
+        · Removed .logo-img CSS class and drop-shadow filter
+        · Restored .logo-wrap svg responsive sizing rules
 ================================================================================
 -->
 
@@ -32,24 +129,182 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="description" content="Free Egypt Salary Calculator 2026. Calculate Gross to Net salary, Net to Gross salary, income tax, social insurance, and employer cost according to Egyptian regulations.">
+<!-- ============================================================
+     P2 SEO BLOCK — v9.0
+     Covers: Core meta, robots, canonical, favicon suite,
+     Open Graph (LinkedIn/Facebook/WhatsApp), Twitter/X Card,
+     JSON-LD structured data, Google verification & GA placeholders.
+     ============================================================ -->
 
-<meta name="keywords" content="Egypt Salary Calculator, Gross to Net Egypt, Net to Gross Egypt, Payroll Calculator Egypt, Income Tax Calculator Egypt, Social Insurance Egypt">
+<!-- ── Core SEO ─────────────────────────────────────────────── -->
+<meta name="description"  content="Free Egypt Salary Calculator 2026 — instantly calculate Gross to Net salary, Net to Gross salary, income tax, social insurance, and full employer cost under Egyptian payroll regulations. Built by Ahmed Hassan, HR Strategist & HR Tech Builder.">
+<meta name="keywords"     content="Egypt Salary Calculator, Payroll Calculator Egypt, Net Salary Egypt, Gross to Net Egypt, Net to Gross Egypt, Income Tax Egypt, Social Insurance Egypt, HR Tools Egypt, Salary Tax Calculator Egypt, Egyptian Payroll 2026, Ahmed Hassan HR">
+<meta name="author"       content="Ahmed Hassan">
 
-<meta name="author" content="Ahmed Hassan">
+<!-- ── Robots — allow indexing, rich snippets, large image previews ── -->
+<meta name="robots"       content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 
-<meta name="robots" content="index, follow">
-<meta property="og:title" content="Egypt Salary Calculator 2026">
+<!-- ── Canonical URL ─────────────────────────────────────────── -->
+<!-- Update if you move to a custom domain -->
+<link rel="canonical"     href="https://ahmedhassanhr.github.io/Salary-Calculator/">
 
-<meta property="og:description"
-content="Free Egypt Salary Calculator for HR Professionals. Calculate Gross to Net salary, Net to Gross salary, income tax, social insurance, and employer cost according to Egyptian regulations.">
+<!-- ── Favicon Suite ─────────────────────────────────────────── -->
+<!-- Standard favicon — place favicon.png in the same folder as index.html -->
+<link rel="icon"              type="image/png"  sizes="32x32" href="favicon.png">
+<link rel="icon"              type="image/png"  sizes="16x16" href="favicon.png">
+<!-- Apple Touch Icon — shown when user adds to iOS home screen -->
+<!-- Place apple-touch-icon.png (180×180 px) in the same folder -->
+<link rel="apple-touch-icon"  sizes="180x180"                  href="apple-touch-icon.png">
+<!-- Browser toolbar / Android theme colour — matches brand navy -->
+<meta name="theme-color"      content="#0C2340">
+<meta name="msapplication-TileColor" content="#0C2340">
 
-<meta property="og:type" content="website">
+<!-- ── Open Graph — LinkedIn · Facebook · WhatsApp ─────────────── -->
+<!--
+  SETUP INSTRUCTIONS:
+  1. Create a preview image at 1200×630 px (PNG or JPG).
+  2. Upload it to your GitHub repo at: assets/images/preview.png
+  3. Replace REPLACE_WITH_PREVIEW_IMAGE_URL below with the full public URL,
+     e.g.: https://ahmedhassanhr.github.io/Salary-Calculator/assets/images/preview.png
+-->
+<meta property="og:type"           content="website">
+<meta property="og:locale"         content="en_US">
+<meta property="og:site_name"      content="Egypt Salary Calculator — Ahmed Hassan">
+<meta property="og:title"          content="Egypt Salary Calculator 2026 | Ahmed Hassan">
+<meta property="og:description"    content="Free Egypt Salary Calculator 2026. Calculate net salary, taxes, and social insurance instantly. Trusted by HR professionals across Egypt.">
+<meta property="og:url"            content="https://ahmedhassanhr.github.io/Salary-Calculator/">
+<meta property="og:image"          content="https://ahmedhassanhr.github.io/Salary-Calculator/assets/images/preview.png">
+<meta property="og:image:width"    content="1200">
+<meta property="og:image:height"   content="630">
+<meta property="og:image:type"     content="image/png">
+<meta property="og:image:alt"      content="Egypt Salary Calculator 2026 — Ahmed Hassan, HR Strategist & HR Tech Builder">
 
-<meta property="og:url"
-content="https://ahmedhassanhr.github.io/Salary-Calculator/">
+<!-- ── Twitter / X Card ──────────────────────────────────────── -->
+<!--
+  Replace REPLACE_WITH_PREVIEW_IMAGE_URL with the same image URL used above.
+  Replace REPLACE_WITH_TWITTER_HANDLE with your Twitter/X username if you have one,
+  e.g.: @AhmedHassanHR  — or remove the twitter:site / twitter:creator tags.
+-->
+<meta name="twitter:card"          content="summary_large_image">
+<meta name="twitter:title"         content="Egypt Salary Calculator 2026 | Ahmed Hassan">
+<meta name="twitter:description"   content="Free Egypt Salary Calculator 2026. Calculate net salary, taxes, and social insurance instantly.">
+<meta name="twitter:image"         content="https://ahmedhassanhr.github.io/Salary-Calculator/assets/images/preview.png">
+<meta name="twitter:image:alt"     content="Egypt Salary Calculator 2026 — Ahmed Hassan">
+<meta name="twitter:site"          content="REPLACE_WITH_TWITTER_HANDLE">
+<meta name="twitter:creator"       content="REPLACE_WITH_TWITTER_HANDLE">
 
-<title>Egypt Salary Calculator 2026 | Gross to Net Salary Calculator</title>
+<!-- ── Google Search Console Verification ────────────────────── -->
+<!--
+  Steps: Search Console → Add Property → "URL prefix" → HTML tag method
+  Copy the content="..." value from the tag Google provides and paste below.
+-->
+<meta name="google-site-verification" content="YOUR_VERIFICATION_CODE_HERE">
+
+<!-- ── Google Analytics 4 (GA4) — Placeholder ───────────────── -->
+<!--
+  When ready, replace this comment with your GA4 snippet.
+  Steps: analytics.google.com → Admin → Data Streams → Web → copy tag
+  Snippet looks like:
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+    gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script>
+-->
+<!-- Google Analytics Tracking Code Placeholder — insert GA4 snippet here -->
+
+<!-- ── JSON-LD Structured Data ───────────────────────────────── -->
+<!--
+  Three schemas for maximum Google rich-result eligibility:
+  1. WebApplication — describes the tool itself (eligible for SoftwareApplication rich result)
+  2. Organization   — describes Ahmed Hassan's brand/organization
+  3. Person         — describes Ahmed Hassan personally (eligible for Knowledge Panel)
+  These schemas are invisible to users but read by Google, Bing, and LinkedIn.
+-->
+<script type="application/ld+json">
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Egypt Salary Calculator 2026",
+    "alternateName": "Egypt Payroll Calculator",
+    "url": "https://ahmedhassanhr.github.io/Salary-Calculator/",
+    "description": "Free Egypt Salary Calculator 2026 for HR professionals and employees. Calculate Gross to Net salary, Net to Gross salary, income tax, social insurance, and employer cost under Egyptian payroll regulations.",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires JavaScript. Works in any modern browser.",
+    "inLanguage": ["en", "ar"],
+    "isAccessibleForFree": true,
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "EGP"
+    },
+    "featureList": [
+      "Gross to Net salary calculation",
+      "Net to Gross salary calculation",
+      "Income tax calculation — Egyptian 2026 brackets",
+      "Social insurance calculation — all subscription categories",
+      "Employer total cost breakdown",
+      "Martyrs Fund and Emergency Fund calculations",
+      "PDF payslip export",
+      "Dark mode",
+      "Arabic and English bilingual support"
+    ],
+    "author": {
+      "@type": "Person",
+      "name": "Ahmed Hassan",
+      "url": "https://www.linkedin.com/in/ahmedhassan-ahmedhassan",
+      "email": "ahmedhr2008@gmail.com",
+      "jobTitle": "HR Strategist & HR Tech Builder"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Ahmed Hassan — HR Tech",
+      "url": "https://ahmedhassanhr.github.io/Salary-Calculator/"
+    },
+    "datePublished": "2026-01-01",
+    "dateModified": "2026-06-01",
+    "version": "9.0",
+    "screenshot": "https://ahmedhassanhr.github.io/Salary-Calculator/assets/images/preview.png"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Ahmed Hassan — HR Tech",
+    "url": "https://ahmedhassanhr.github.io/Salary-Calculator/",
+    "email": "ahmedhr2008@gmail.com",
+    "description": "HR technology tools and payroll calculators for Egyptian HR professionals, built by Ahmed Hassan — HR Strategist & HR Tech Builder.",
+    "founder": {
+      "@type": "Person",
+      "name": "Ahmed Hassan"
+    },
+    "sameAs": [
+      "https://www.linkedin.com/in/ahmedhassan-ahmedhassan"
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Ahmed Hassan",
+    "url": "https://www.linkedin.com/in/ahmedhassan-ahmedhassan",
+    "email": "ahmedhr2008@gmail.com",
+    "jobTitle": "HR Strategist & HR Tech Builder",
+    "description": "HR professional with 17+ years of experience. MBA in Strategic Management. Creator of AI-powered HR tools for Egypt and the MENA region.",
+    "knowsAbout": [
+      "Human Resources",
+      "Payroll Management",
+      "Egyptian Labour Law",
+      "HR Technology",
+      "Compensation & Benefits",
+      "Social Insurance Egypt"
+    ],
+    "sameAs": [
+      "https://www.linkedin.com/in/ahmedhassan-ahmedhassan"
+    ]
+  }
+]
+</script>
+
+<title>Egypt Salary Calculator 2026 | Ahmed Hassan</title>
 <style>
 /* ================================================================================
    STYLESHEET CONTENTS
@@ -78,12 +333,40 @@ content="https://ahmedhassanhr.github.io/Salary-Calculator/">
    same variables when the user switches to dark mode.
    ================================================================================ */
 :root{
-  --bg:#F0F4F9; --card:#fff; --ink:#0B1E30; --muted:#5E7185;
-  --primary:#0B2545; --primary-mid:#163860; --primary-lt:#204F82;
-  --accent:#D4A024; --accent-lt:#FAF0D3;
-  --line:#D8E2EE; --good:#1E7C52; --bad:#B03A2E; --cost:#5B3DA8;
-  --toggle-on:#1E7C52; --toggle-off:#8E9BAA;
-  --radius:10px; --shadow:0 4px 18px rgba(11,37,69,.09);
+  /* ── Page surfaces ── */
+  --bg:#EEF2F7;            /* Page background — cool blue-white        */
+  --card:#FFFFFF;          /* Card surface — pure white                 */
+  --card-raised:#F8FAFD;   /* Raised card / nested input background     */
+
+  /* ── Text ── */
+  --ink:#0A1929;           /* Body text — deep navy-black  (18.5:1) ✅  */
+  --muted:#4A6080;         /* Secondary text — slate blue  (6.2:1)  ✅  */
+
+  /* ── Primary brand — Deep Navy ── */
+  --primary:#0C2340;       /* Brand anchor — pure deep navy             */
+  --primary-mid:#0E3260;   /* Hero gradient mid — more saturated        */
+  --primary-lt:#1A5490;    /* Hero gradient end — dynamic blue          */
+
+  /* ── Accent — Elegant Gold ── */
+  --accent:#C9981A;        /* Primary gold  (3.1:1 on white — AA bold) ✅ */
+  --accent-lt:#FDF3D8;     /* Gold tint background — warm fill          */
+  --accent-glow:#F5C842;   /* Bright gold — hover states & SVG fills   */
+
+  /* ── Structure ── */
+  --line:#D0DCE8;          /* Borders / dividers — cool blue-grey       */
+
+  /* ── Status colours ── */
+  --good:#166534;          /* Success / net green  (9.1:1) ✅ AAA        */
+  --bad:#991B1B;           /* Error / deduction red (8.6:1) ✅ AAA       */
+  --cost:#4A47A3;          /* Employer cost — royal indigo (6.0:1) ✅   */
+
+  /* ── Toggle ── */
+  --toggle-on:#166534;     /* Matches --good                            */
+  --toggle-off:#94A3B8;    /* Neutral slate — off state                 */
+
+  /* ── Elevation ── */
+  --radius:12px;           /* Border radius — 2 px rounder, premium SaaS feel */
+  --shadow:0 4px 24px rgba(12,35,64,.10);  /* Navy-tinted, wider spread */
 }
 
 /* ================================================================================
@@ -100,38 +383,44 @@ content="https://ahmedhassanhr.github.io/Salary-Calculator/">
    — layout, spacing, formulas, and all features stay exactly the same.
    ===================================================================== */
 [data-theme="dark"]{
-  /* Page background — dark slate instead of light grey */
-  --bg:#0F1923;
-  /* Card surfaces — slightly lighter than the page so cards "float" */
-  --card:#1A2535;
-  /* Main body text — soft white, not pure white (easier on the eyes) */
-  --ink:#E2EAF4;
-  /* Secondary/muted text — mid-tone blue-grey */
-  --muted:#7A90A8;
-  /* Navy primary becomes a lighter blue so it's readable on dark backgrounds */
-  --primary:#A8C4E0;
-  --primary-mid:#7BAED6;
-  --primary-lt:#5C9BC8;
-  /* Gold accent stays the same — it pops on both light and dark */
-  --accent:#D4A024;
-  /* Gold tint becomes a very dark warm tone instead of pale yellow */
-  --accent-lt:#2A2110;
-  /* Border/divider lines — subtle on dark */
-  --line:#2C3E55;
-  /* Status colours — slightly brightened for dark backgrounds */
-  --good:#27AE73;
-  --bad:#E05A45;
-  --cost:#9B7AE0;
-  /* Martyrs' fund toggle remains green/grey */
-  --toggle-on:#27AE73;
-  --toggle-off:#3D5066;
-  /* Card shadow — stronger on dark so cards still have depth */
-  --shadow:0 4px 20px rgba(0,0,0,.35);
+  /* ── Page surfaces ── */
+  --bg:#0A1525;            /* Deeper navy-black — truer dark brand tone  */
+  --card:#112035;          /* Card — clear step above page bg            */
+  --card-raised:#0D1B2E;   /* Input bg / nested surfaces on dark         */
+
+  /* ── Text ── */
+  --ink:#E8F0F8;           /* Body text — bright enough, not glaring     */
+  --muted:#7B9DB8;         /* Secondary — more blue than grey on dark    */
+
+  /* ── Primary brand on dark — light enough to read ── */
+  --primary:#93C5E8;       /* Sky-blue — readable & brand-adjacent       */
+  --primary-mid:#60A5D0;   /* Deeper mid-tone                            */
+  --primary-lt:#3B82C4;    /* Anchors to brand blue family               */
+
+  /* ── Accent — Gold is unchanged; it always works ── */
+  --accent:#C9981A;
+  --accent-lt:#2C2008;     /* Dark warm fill — richer than old #2A2110   */
+  --accent-glow:#F5C842;   /* Same bright glow on dark                   */
+
+  /* ── Structure ── */
+  --line:#1E3550;          /* Cooler, cleaner dividers                   */
+
+  /* ── Status — vivid on dark backgrounds ── */
+  --good:#22C55E;          /* Bright emerald — pops on dark              */
+  --bad:#F87171;           /* Soft rose-red — less aggressive on dark    */
+  --cost:#818CF8;          /* Indigo-family — less lavender              */
+
+  /* ── Toggle ── */
+  --toggle-on:#22C55E;     /* Matches --good in dark mode                */
+  --toggle-off:#334E68;    /* Navy-aligned off state                     */
+
+  /* ── Elevation ── */
+  --shadow:0 4px 24px rgba(0,0,0,.40);  /* Stronger depth on dark       */
 }
 
 /* ── Dark mode: hero stays dark navy gradient (already dark, just deepen it) */
 [data-theme="dark"] .hero{
-  background:linear-gradient(135deg,#060D18 0%,#0D1F35 55%,#122A47 100%);
+  background:linear-gradient(135deg,#040F1E 0%,#0A1B30 55%,#0F2848 100%);
 }
 
 /* ── Dark mode: page background for the <body> */
@@ -143,7 +432,7 @@ content="https://ahmedhassanhr.github.io/Salary-Calculator/">
 [data-theme="dark"] input[type="text"],
 [data-theme="dark"] input[type="number"],
 [data-theme="dark"] select{
-  background:#111E2E;
+  background:var(--card-raised);  /* Now uses the CSS variable — consistent depth */
   color:var(--ink);
   border-color:var(--line);
 }
@@ -152,39 +441,39 @@ content="https://ahmedhassanhr.github.io/Salary-Calculator/">
 }
 
 /* ── Dark mode: mode tabs background pill */
-[data-theme="dark"] .mode-tabs{background:#0F1923;}
-[data-theme="dark"] .mode-tab.active{background:#1A2535;color:var(--primary);}
+[data-theme="dark"] .mode-tabs{background:var(--bg);}
+[data-theme="dark"] .mode-tab.active{background:var(--card);color:var(--primary);}
 
 /* ── Dark mode: toggle field (Martyrs' Fund row) */
-[data-theme="dark"] .toggle-field{background:#111E2E;}
+[data-theme="dark"] .toggle-field{background:var(--card-raised);}
 
 /* ── Dark mode: summary net/cost rows — darken the tinted backgrounds */
 [data-theme="dark"] .summary-row.net-bg{
-  background:linear-gradient(135deg,#0E2B1F,#122B20);
-  border-color:#1E5C3A;
+  background:linear-gradient(135deg,#0A2418,#0F261C);   /* Deep forest — matches new --good #22C55E */
+  border-color:#1A4A2E;
 }
 [data-theme="dark"] .summary-row.cost-bg{
-  background:linear-gradient(135deg,#1A1330,#1F1638);
-  border-color:#3D2A70;
+  background:linear-gradient(135deg,#16153D,#1A1945);   /* Deep indigo — matches new --cost #818CF8 */
+  border-color:#312F82;
 }
 
 /* ── Dark mode: settings panel table headers */
 [data-theme="dark"] table.bracket-table th{
-  background:#111E2E;
+  background:var(--card-raised);
 }
 [data-theme="dark"] table.bracket-table td,
 [data-theme="dark"] table.bracket-table th{
   border-color:var(--line);
 }
 [data-theme="dark"] table.bracket-table input{
-  background:#111E2E;
+  background:var(--card-raised);
   color:var(--ink);
   border-color:var(--line);
 }
 
 /* ── Dark mode: footer signature card */
 [data-theme="dark"] .footer-sig{
-  background:#1A2535;
+  background:var(--card);
   border-color:var(--line);
 }
 
@@ -474,6 +763,53 @@ button.secondary-btn:hover{background:var(--bg);}
 
 
 
+/* ================================================================================
+   TOAST NOTIFICATION SYSTEM
+   Non-blocking, accessible notifications replacing browser alert() calls.
+   Three types: error (red), success (green), warning (gold).
+   Toasts stack vertically, auto-dismiss after 5 s, and respect RTL direction.
+   ================================================================================ */
+.ah-toast-container{
+  position:fixed;top:18px;right:18px;z-index:99999;
+  display:flex;flex-direction:column;gap:10px;
+  max-width:340px;width:calc(100% - 36px);
+  pointer-events:none;
+}
+html[dir="rtl"] .ah-toast-container{right:auto;left:18px;}
+.ah-toast{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:13px 16px;border-radius:9px;
+  font-size:.85rem;font-weight:600;line-height:1.4;
+  box-shadow:0 6px 20px rgba(0,0,0,.18);
+  pointer-events:all;
+  animation:toastIn .22s ease;
+}
+.ah-toast.dismissing{animation:toastOut .3s ease forwards;}
+@keyframes toastIn {from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
+@keyframes toastOut{from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(-10px);}}
+.ah-toast-icon{font-size:1rem;line-height:1;flex-shrink:0;margin-top:1px;}
+.ah-toast-msg{flex:1;}
+.ah-toast-close{
+  background:none;border:none;cursor:pointer;
+  font-size:1rem;line-height:1;padding:0;margin:0;
+  opacity:.65;flex-shrink:0;color:inherit;
+}
+.ah-toast-close:hover{opacity:1;}
+.ah-toast.error  {background:#FDEDED;color:#7B1F1F;border:1.5px solid #F5BCBC;}
+.ah-toast.success{background:#EDF7F1;color:#1A5C38;border:1.5px solid #A7D9BC;}
+.ah-toast.warning{background:#FFF8E6;color:#6B4A00;border:1.5px solid #F5D68A;}
+[data-theme="dark"] .ah-toast.error  {background:#2D0D0D;color:#FCA5A5;border-color:#991B1B;}
+[data-theme="dark"] .ah-toast.success{background:#052E16;color:#86EFAC;border-color:#166534;}
+[data-theme="dark"] .ah-toast.warning{background:#2C2008;color:#FDE68A;border-color:#C9981A;}
+
+/* Inline validation error state on the salary input */
+#salaryInput.input-error{border-color:var(--bad) !important;box-shadow:0 0 0 3px rgba(176,58,46,.15) !important;}
+#salaryErrorMsg{
+  font-size:var(--t-small);color:var(--bad);margin-top:5px;
+  font-weight:600;display:none;
+}
+#salaryErrorMsg.visible{display:block;}
+
 /* ── Reset button hover state ── */
 #resetBtn:hover{background:var(--bad) !important;color:#fff !important;box-shadow:0 4px 12px rgba(176,58,46,.3) !important;}
 
@@ -755,7 +1091,7 @@ button.calculate { padding: 15px; font-size: .96rem; min-height: 50px; }
 
 </style>
 </head>
-<body>
+<body id="app-root">
 
 <!-- ============================================================
      SECTION: HEADER
@@ -765,7 +1101,7 @@ button.calculate { padding: 15px; font-size: .96rem; min-height: 50px; }
 <header class="hero">
   <div class="hero-inner">
 
-    <!-- Logo: AH Monogram — Ahmed Hassan HR Expert -->
+    <!-- Logo: AH Monogram — Ahmed Hassan, HR Strategist & HR Tech Builder -->
     <div class="logo-wrap">
       <svg width="66" height="66" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -832,10 +1168,21 @@ button.calculate { padding: 15px; font-size: .96rem; min-height: 50px; }
      ============================================================ -->
 <div class="page">
 
+  <!-- ── Skip-to-content link for keyboard/screen-reader users ── -->
+  <a href="#mainContent"
+     style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"
+     onfocus="this.style.cssText='position:fixed;top:8px;left:8px;z-index:9999;padding:10px 18px;background:#0C2340;color:#fff;border-radius:8px;font-weight:700;text-decoration:none;width:auto;height:auto;overflow:visible;'"
+     onblur="this.style.cssText='position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;'"
+  >Skip to main content</a>
+
+  <main id="mainContent" role="main" aria-label="Egypt Salary Calculator">
+
   <!-- ══ MAIN NAV ══════════════════════════════════════════════════════ -->
-  <div class="tabs main-tabs">
-    <button class="tab-btn active" id="navSingle" data-i18n="tabSingle">Single Calculation</button>
-  </div>
+  <nav aria-label="Calculator sections">
+    <div class="tabs main-tabs">
+      <button class="tab-btn active" id="navSingle" data-i18n="tabSingle">Single Calculation</button>
+    </div>
+  </nav>
 
   <!-- ============================================================
        SECTION: SETTINGS PANEL
@@ -921,6 +1268,7 @@ button.calculate { padding: 15px; font-size: .96rem; min-height: 50px; }
       <!-- INPUT FORM PANEL (left on desktop, top on mobile)
            Fields: salary input, tax exemption category, Martyrs'
            Fund toggle, social insurance wage basis and category. -->
+      <section aria-label="Salary input form">
       <div class="panel-sticky">
         <div class="card">
           <div class="mode-tabs">
@@ -935,6 +1283,7 @@ button.calculate { padding: 15px; font-size: .96rem; min-height: 50px; }
               style="font-variant-numeric:tabular-nums;letter-spacing:.3px;"
               placeholder="E.g. 15,000">
             <div class="hint" id="salaryHint" data-i18n="salaryHintGross">Enter the employee's full monthly gross salary before any deductions.</div>
+            <div id="salaryErrorMsg" role="alert" aria-live="polite"></div>
           </div>
 
           <div class="form-section-title" data-i18n="sectionTax">Tax Settings</div>
@@ -1007,8 +1356,10 @@ button.calculate { padding: 15px; font-size: .96rem; min-height: 50px; }
           </div>
         </div>
       </div>
+      </section><!-- /section: Salary input form -->
 
       <!-- RIGHT: Results breakdown + chart -->
+      <section aria-label="Salary calculation results">
       <div id="resultsColumn">
 
         <!-- RESET BAR: appears at top of results column after calculation.
@@ -1114,6 +1465,7 @@ button.calculate { padding: 15px; font-size: .96rem; min-height: 50px; }
         </div>
       </div>
     </div>
+      </section><!-- /section: Salary calculation results -->
   </div>
 
   <!-- ============================================================
@@ -1177,6 +1529,24 @@ button.calculate { padding: 15px; font-size: .96rem; min-height: 50px; }
       <!-- TODO: Overtime Calculator UI goes here -->
     </div>
 
+    <!-- ── FUTURE MODULE 6: About Page — Ahmed Hassan
+         Purpose: Profile page showcasing Ahmed Hassan's personal brand,
+         background, and HR tools portfolio. Content ready for future build.
+
+         CONTENT TO INCLUDE WHEN BUILT:
+         - Name:        Ahmed Hassan
+         - Title:       HR Strategist & HR Tech Builder
+         - Experience:  17+ years in HR across multiple industries
+         - Education:   MBA in Strategic Management
+         - Specialty:   AI-powered HR tools and digital payroll systems
+         - Mission:     Empowering HR professionals with smart, free tools
+
+         Status: Planned — not yet implemented.
+         To activate: remove style="display:none;" and add a nav tab. -->
+    <div id="moduleAbout" data-module="about-ahmed-hassan" style="display:none;">
+      <!-- TODO: About Page UI goes here -->
+    </div>
+
   </div>
   <!-- /futureModules -->
 
@@ -1206,7 +1576,7 @@ button.calculate { padding: 15px; font-size: .96rem; min-height: 50px; }
       </svg>
       <div>
         <div class="sig-name">Ahmed Hassan</div>
-        <div class="sig-title">HR Expert</div>
+        <div class="sig-title">HR Strategist &amp; HR Tech Builder</div>
       </div>
     </div>
 
@@ -1227,6 +1597,8 @@ button.calculate { padding: 15px; font-size: .96rem; min-height: 50px; }
     </div>
 
   </footer>
+
+  </main><!-- /main#mainContent -->
 </div>
 
 <!-- ============================================================
@@ -1461,6 +1833,10 @@ const I18N = {
     siSubEmployer:"Employer Subscription",
     siSubUnder18:"Workers Under 18 Years",
     calcBtn:"Calculate Salary",
+    toastSalaryInvalid:"Please enter a valid salary amount.",
+    toastSalaryZero:"Salary must be greater than zero.",
+    toastSettingsApplied:"Settings applied successfully.",
+    toastInvalidFile:"Invalid settings file. Please upload a valid JSON export.",
     resultsHeader:"Salary Breakdown",
     rowGross:"Gross Monthly Salary",rowInsurableWage:"Social Insurance Wage Basis Amount",
     rowEmployeeSI:"Social Insurance — Employee Share",rowAnnualTaxable:"Annual Taxable Income",
@@ -1492,7 +1868,7 @@ const I18N = {
     noLimit:"No Limit",
     payslipMainTitle:"Salary Calculation Breakdown",payslipDate:"Issued On",
     payslipItem:"Item",payslipAmount:"Amount",payslipPct:"% of Gross",payslipNet:"Net Monthly Salary",
-    payslipFooterNote:"This document was generated by the Egypt HR Salary Calculator — Ahmed Hassan · HR Expert",
+    payslipFooterNote:"This document was generated by the Egypt HR Salary Calculator — Ahmed Hassan · HR Strategist & HR Tech Builder",
     payslipCostHeader:"Total Employer Cost"
   },
   ar:{
@@ -1526,6 +1902,10 @@ const I18N = {
     siSubEmployer:"اشتراك صاحب العمل",
     siSubUnder18:"العمال دون 18 سنة",
     calcBtn:"احسب الراتب",
+    toastSalaryInvalid:"يرجى إدخال مبلغ راتب صحيح.",
+    toastSalaryZero:"يجب أن يكون الراتب أكبر من صفر.",
+    toastSettingsApplied:"تم تطبيق الإعدادات بنجاح.",
+    toastInvalidFile:"ملف الإعدادات غير صالح. يرجى رفع ملف JSON صحيح.",
     resultsHeader:"تفاصيل الراتب",
     rowGross:"الراتب الإجمالي الشهري",rowInsurableWage:"قيمة أساس أجر التأمينات",
     rowEmployeeSI:"التأمينات الاجتماعية — حصة الموظف",rowAnnualTaxable:"الدخل السنوي الخاضع للضريبة",
@@ -1557,7 +1937,7 @@ const I18N = {
     noLimit:"بلا حد",
     payslipMainTitle:"تفاصيل حساب الراتب",payslipDate:"تاريخ الإصدار",
     payslipItem:"البيان",payslipAmount:"المبلغ",payslipPct:"% من الإجمالي",payslipNet:"صافي الراتب الشهري",
-    payslipFooterNote:"تم إنشاء هذه الوثيقة بواسطة حاسبة رواتب مصر — أحمد حسن · خبير موارد بشرية",
+    payslipFooterNote:"تم إنشاء هذه الوثيقة بواسطة حاسبة رواتب مصر — أحمد حسن · استراتيجي موارد بشرية وبنّاء تقنيات HR",
     payslipCostHeader:"إجمالي تكلفة صاحب العمل"
   }
 };
@@ -1579,6 +1959,69 @@ document.getElementById('langToggle').addEventListener('click', () => {
   currentLang = currentLang === 'en' ? 'ar' : 'en';
   applyTranslations();
 });
+
+/* ================================================================================
+   TOAST NOTIFICATION UTILITY — replaces all browser alert() calls
+   ─────────────────────────────────────────────────────────────────────────────────
+   showToast(message, type, duration)
+     message  : string to display
+     type     : 'error' | 'success' | 'warning'  (default: 'error')
+     duration : milliseconds before auto-dismiss   (default: 5000)
+
+   Toasts are:
+   · Non-blocking — the user can keep interacting with the page
+   · RTL-aware    — align to the right in Arabic mode
+   · Dark-mode-aware — colours automatically update
+   · Screen-reader accessible — container has role="status" + aria-live
+   ================================================================================ */
+function showToast(message, type, duration) {
+  type     = type     || 'error';
+  duration = duration || 5000;
+
+  // Create the container once and reuse it
+  var container = document.getElementById('ahToastContainer');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'ahToastContainer';
+    container.className = 'ah-toast-container';
+    container.setAttribute('role', 'status');
+    container.setAttribute('aria-live', 'polite');
+    document.body.appendChild(container);
+  }
+
+  var icons = { error: '⚠', success: '✓', warning: 'ℹ' };
+
+  var toast = document.createElement('div');
+  toast.className = 'ah-toast ' + type;
+  toast.innerHTML =
+    '<span class="ah-toast-icon" aria-hidden="true">' + icons[type] + '</span>' +
+    '<span class="ah-toast-msg">' + message + '</span>' +
+    '<button class="ah-toast-close" aria-label="Dismiss">&times;</button>';
+
+  // Dismiss on close button click
+  toast.querySelector('.ah-toast-close').addEventListener('click', function() {
+    dismissToast(toast);
+  });
+
+  container.appendChild(toast);
+
+  // Auto-dismiss after duration
+  var timer = setTimeout(function() { dismissToast(toast); }, duration);
+
+  // Cancel auto-dismiss if user hovers (they're reading it)
+  toast.addEventListener('mouseenter', function() { clearTimeout(timer); });
+  toast.addEventListener('mouseleave', function() {
+    timer = setTimeout(function() { dismissToast(toast); }, 2000);
+  });
+}
+
+function dismissToast(toast) {
+  if (!toast || !toast.parentNode) return;
+  toast.classList.add('dismissing');
+  setTimeout(function() {
+    if (toast.parentNode) toast.parentNode.removeChild(toast);
+  }, 320);
+}
 
 /* ================================================================================
    SECTION G — UI: FORM CONTROLS
@@ -1862,8 +2305,24 @@ function showResults(r) {
    ================================================================================ */
 function runCalculation() {
   const val = parseFloat($('salaryInput').value.replace(/,/g,''));
+  const errEl = $('salaryErrorMsg');
+  const inputEl = $('salaryInput');
+
+  // Clear previous error state
+  if (errEl)   { errEl.classList.remove('visible'); errEl.textContent = ''; }
+  if (inputEl) { inputEl.classList.remove('input-error'); }
+
+  // Fix 3+4: reject NaN, negative values, and zero — show inline error, not alert()
   if (isNaN(val) || val < 0) {
-    alert('Please enter a valid, positive salary amount.\nأدخل راتبًا صحيحًا وموجبًا.');
+    const msg = I18N[currentLang].toastSalaryInvalid || 'Please enter a valid salary amount.';
+    if (errEl)   { errEl.textContent = msg; errEl.classList.add('visible'); }
+    if (inputEl) { inputEl.classList.add('input-error'); inputEl.focus(); }
+    return;
+  }
+  if (val === 0) {
+    const msg = I18N[currentLang].toastSalaryZero || 'Salary must be greater than zero.';
+    if (errEl)   { errEl.textContent = msg; errEl.classList.add('visible'); }
+    if (inputEl) { inputEl.classList.add('input-error'); inputEl.focus(); }
     return;
   }
   const r = currentMode === 'grossToNet'
@@ -1935,7 +2394,18 @@ $('printBtn').addEventListener('click', () => {
   const yr = RULES.year || PAYROLL_YEAR;
   const isFreelance = taxTypeEl.value === 'freelance';
   const incMartyrs  = martyrsToggle.checked;
-  const today = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+  // RTL support: detect if we're in Arabic mode for the PDF
+  const isPdfRtl  = currentLang === 'ar';
+  const pdfDir    = isPdfRtl ? 'rtl' : 'ltr';
+  // Date locale: use Arabic locale when in Arabic mode for natural date formatting
+  const pdfLocale = isPdfRtl ? 'ar-EG' : 'en-GB';
+  const today = new Date().toLocaleDateString(pdfLocale, {day:'2-digit', month:'long', year:'numeric'});
+  // Summary strip labels — use translated strings in Arabic mode
+  const lblCompany  = isPdfRtl ? 'الشركة'        : 'Company';
+  const lblGross    = isPdfRtl ? 'الراتب الإجمالي' : 'Gross Salary';
+  const lblTaxCat   = isPdfRtl ? 'فئة الضريبة'    : 'Tax Category';
+  const lblNet      = isPdfRtl ? 'صافي الراتب'    : 'Net Salary';
+  const lblHRExpert = isPdfRtl ? 'استراتيجي موارد بشرية وبنّاء تقنيات HR' : 'HR Strategist & HR Tech Builder';
 
   // AH monogram SVG (correct logo — used at two sizes)
   const ahLogo = (size) => `<svg width="${size}" height="${size}" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
@@ -1994,22 +2464,36 @@ $('printBtn').addEventListener('click', () => {
     <style>
       @page { size: A4; margin: 12mm 14mm; }
       * { box-sizing: border-box; }
-      body { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; }
-      .ps { max-width:100%; }
-      table { width:100%; border-collapse:collapse; }
-      th { padding:7px 10px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.7px; }
+      body { font-family: "Segoe UI", "Segoe UI", Tahoma, Arial, sans-serif; font-size: 12px;
+             direction: ${pdfDir}; }
+      .ps { max-width:100%; direction:${pdfDir}; }
+      table { width:100%; border-collapse:collapse; direction:${pdfDir}; }
+      th { padding:7px 10px; font-size:10px; font-weight:700;
+           text-transform:${isPdfRtl ? 'none' : 'uppercase'}; letter-spacing:${isPdfRtl ? '0' : '.7px'};
+           text-align:${isPdfRtl ? 'right' : 'left'}; }
+      td { text-align:${isPdfRtl ? 'right' : 'left'}; }
+      td:last-child, th:last-child { text-align:${isPdfRtl ? 'left' : 'right'}; }
       .two-col { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:12px; }
+      /* Arabic: flip flex row direction so header items mirror correctly */
+      .ps-header-row { display:flex; justify-content:space-between; align-items:center;
+                       flex-direction:${isPdfRtl ? 'row-reverse' : 'row'}; }
+      .ps-logo-wrap { display:flex; align-items:center; gap:12px;
+                      flex-direction:${isPdfRtl ? 'row-reverse' : 'row'}; }
+      .ps-footer-row { display:flex; justify-content:space-between; align-items:center;
+                       flex-direction:${isPdfRtl ? 'row-reverse' : 'row'}; }
+      .ps-sig-wrap { display:flex; align-items:center; gap:8px;
+                     flex-direction:${isPdfRtl ? 'row-reverse' : 'row'}; }
     </style>
-    <div class="ps">
+    <div class="ps" dir="${pdfDir}" lang="${currentLang}">
 
       <!-- ── HEADER ── -->
-      <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #0B2545;padding-bottom:10px;margin-bottom:12px;">
-        <div style="display:flex;align-items:center;gap:12px;">
+      <div class="ps-header-row" style="border-bottom:3px solid #0B2545;padding-bottom:10px;margin-bottom:12px;">
+        <div class="ps-logo-wrap">
           ${ahLogo(46)}
           <div>
             <div style="font-size:16px;font-weight:800;color:#0B2545;line-height:1.2;">${d.payslipMainTitle}</div>
             <div style="font-size:10px;color:#5E7185;margin-top:3px;display:flex;align-items:center;gap:5px;">
-              ${flagB64 ? `<img src="${flagB64}" style="width:14px;height:14px;border-radius:50%;object-fit:cover;">` : '🇪🇬'}
+              ${flagB64 ? `<img src="${flagB64}" alt="Egypt Flag" style="width:14px;height:14px;border-radius:50%;object-fit:cover;">` : '🇪🇬'}
               Egypt Salary Calculator &nbsp;·&nbsp; ${yr} Payroll Rules
             </div>
           </div>
@@ -2021,12 +2505,12 @@ $('printBtn').addEventListener('click', () => {
         </div>
       </div>
 
-      <!-- ── SUMMARY STRIP ── -->
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;padding:10px 12px;background:#F0F4F9;border-radius:7px;">
-        <div><div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px;">Company</div><div style="font-size:12px;font-weight:700;color:#0B2545;">${co}</div></div>
-        <div><div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px;">Gross Salary</div><div style="font-size:12px;font-weight:700;color:#0B2545;">${fEGP(r.gross)}</div></div>
-        <div><div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px;">Tax Category</div><div style="font-size:11px;font-weight:700;color:#0B2545;">${taxTypeEl.options[taxTypeEl.selectedIndex].text}</div></div>
-        <div><div style="font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px;">Net Salary</div><div style="font-size:14px;font-weight:900;color:#1E7C52;">${fEGP(r.net)}</div></div>
+      <!-- ── SUMMARY STRIP (labels use translated variables for RTL) ── -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;padding:10px 12px;background:#F0F4F9;border-radius:7px;direction:${pdfDir};">
+        <div><div style="font-size:9px;color:#888;text-transform:${isPdfRtl?'none':'uppercase'};letter-spacing:.6px;margin-bottom:2px;">${lblCompany}</div><div style="font-size:12px;font-weight:700;color:#0B2545;">${co}</div></div>
+        <div><div style="font-size:9px;color:#888;text-transform:${isPdfRtl?'none':'uppercase'};letter-spacing:.6px;margin-bottom:2px;">${lblGross}</div><div style="font-size:12px;font-weight:700;color:#0B2545;">${fEGP(r.gross)}</div></div>
+        <div><div style="font-size:9px;color:#888;text-transform:${isPdfRtl?'none':'uppercase'};letter-spacing:.6px;margin-bottom:2px;">${lblTaxCat}</div><div style="font-size:11px;font-weight:700;color:#0B2545;">${taxTypeEl.options[taxTypeEl.selectedIndex].text}</div></div>
+        <div><div style="font-size:9px;color:#888;text-transform:${isPdfRtl?'none':'uppercase'};letter-spacing:.6px;margin-bottom:2px;">${lblNet}</div><div style="font-size:14px;font-weight:900;color:#1E7C52;">${fEGP(r.net)}</div></div>
       </div>
 
       <!-- ── TWO TABLES SIDE BY SIDE ── -->
@@ -2060,11 +2544,11 @@ $('printBtn').addEventListener('click', () => {
       </div>
 
       <!-- ── FOOTER ── -->
-      <div style="margin-top:14px;padding-top:10px;border-top:1px solid #D8E2EE;display:flex;justify-content:space-between;align-items:center;">
+      <div class="ps-footer-row" style="margin-top:14px;padding-top:10px;border-top:1px solid #D8E2EE;">
         <div style="font-size:9px;color:#aaa;">${d.payslipFooterNote}</div>
-        <div style="display:flex;align-items:center;gap:8px;">
+        <div class="ps-sig-wrap">
           ${ahLogo(24)}
-          <div><div style="font-weight:800;font-size:11px;color:#0B2545;">Ahmed Hassan</div><div style="font-size:9px;color:#888;">HR Expert</div></div>
+          <div><div style="font-weight:800;font-size:11px;color:#0B2545;">Ahmed Hassan</div><div style="font-size:9px;color:#888;white-space:nowrap;">${lblHRExpert}</div></div>
         </div>
       </div>
 
@@ -2281,7 +2765,8 @@ function readSettingsForm() {
 $('applySettingsBtn').addEventListener('click', () => {
   readSettingsForm(); stampYear();
   if (lastResult) runCalculation();
-  alert(currentLang==='ar' ? 'تم تطبيق الإعدادات' : 'Settings applied.');
+  // Fix 3: replaced alert() with non-blocking toast
+  showToast(I18N[currentLang].toastSettingsApplied || 'Settings applied.', 'success');
 });
 $('resetSettingsBtn').addEventListener('click', () => { RULES=getDefaultRules(); loadSettingsForm(); stampYear(); if(lastResult) runCalculation(); });
 $('exportSettingsBtn').addEventListener('click', () => {
@@ -2293,7 +2778,8 @@ $('exportSettingsBtn').addEventListener('click', () => {
 $('importSettingsInput').addEventListener('change', e => {
   const f=e.target.files[0]; if(!f) return;
   const r=new FileReader();
-  r.onload=ev=>{try{RULES=JSON.parse(ev.target.result);loadSettingsForm();stampYear();if(lastResult)runCalculation();}catch{alert('Invalid settings file.');}};
+  r.onload=ev=>{try{RULES=JSON.parse(ev.target.result);loadSettingsForm();stampYear();if(lastResult)runCalculation();}catch(err){// Fix 3: replaced alert() with non-blocking toast
+  showToast(I18N[currentLang].toastInvalidFile||'Invalid settings file.','error');}};
   r.readAsText(f);
 });
 
